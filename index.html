@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Owner Retention Diagnostic · Operator Series</title>
+  <meta name="description" data-i18n-meta="description" content="Losing an owner is losing the unit. Measure owner churn, revenue gap, and reporting cadence. Part of the Operator Series.">
+  <link rel="alternate" hreflang="en" href="https://rbisschoff.github.io/owner-retention-diagnostic/?lang=en">
+  <link rel="alternate" hreflang="it" href="https://rbisschoff.github.io/owner-retention-diagnostic/?lang=it">
+  <link rel="alternate" hreflang="de" href="https://rbisschoff.github.io/owner-retention-diagnostic/?lang=de">
+  <link rel="alternate" hreflang="x-default" href="https://rbisschoff.github.io/owner-retention-diagnostic/?lang=en">
+
+  <meta property="og:title" data-i18n-meta="ogTitle" content="Owner Retention Diagnostic · Operator Series">
+  <meta property="og:description" data-i18n-meta="ogDescription" content="Losing an owner is losing the unit. Most managers only notice after it happens.">
+  <meta property="og:type" content="website">
+
+  <script>
+    (function () {
+      const supported = ['en', 'it', 'de'];
+      const queryValue = new URLSearchParams(window.location.search).get('lang');
+      let lang;
+      if (queryValue !== null) {
+        lang = supported.includes(queryValue.toLowerCase()) ? queryValue.toLowerCase() : 'en';
+      } else {
+        try { lang = localStorage.getItem('ois-lang'); } catch (e) {}
+        if (!supported.includes(lang)) {
+          const browserLang = (navigator.language || '').slice(0, 2).toLowerCase();
+          lang = supported.includes(browserLang) ? browserLang : 'en';
+        }
+      }
+      document.documentElement.lang = lang;
+      window.__oisInitialLang = lang;
+      try { localStorage.setItem('ois-lang', lang); } catch (e) {}
+      const metadata = {
+        en: {
+          description: 'Losing an owner is losing the unit. Measure owner churn, revenue gap, and reporting cadence.',
+          ogTitle: 'Owner Retention Diagnostic · Operator Series',
+          ogDescription: 'Losing an owner is losing the unit. Most managers only notice after it happens.'
+        },
+        it: {
+          description: 'Perdere un proprietario significa perdere l\'unità. Misura churn, gap di ricavi e cadenza di reporting.',
+          ogTitle: 'Owner Retention Diagnostic · Operator Series',
+          ogDescription: 'Perdere un proprietario significa perdere l\'unità. La maggior parte dei gestori se ne accorge solo dopo.'
+        },
+        de: {
+          description: 'Einen Eigentümer zu verlieren heißt, die Unit zu verlieren. Messen Sie Churn, Umsatzlücke und Reporting-Rhythmus.',
+          ogTitle: 'Owner Retention Diagnostic · Operator Series',
+          ogDescription: 'Einen Eigentümer zu verlieren heißt, die Unit zu verlieren. Die meisten Manager merken es erst danach.'
+        }
+      };
+      window.updateOisMetadata = function (activeLang) {
+        const pack = metadata[activeLang] || metadata.en;
+        document.querySelectorAll('[data-i18n-meta]').forEach(function (el) {
+          const value = pack[el.getAttribute('data-i18n-meta')];
+          if (value) el.setAttribute('content', value);
+        });
+      };
+      window.updateOisMetadata(lang);
+    })();
+  </script>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JPJ7VKS451"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-JPJ7VKS451');
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --accent: #5C6F82;
+      --accent-dark: #455565;
+      --accent-light: rgba(92, 111, 130, 0.12);
+      --accent-secondary: #7A8B9A;
+      --alert: #FF3B30;
+      --positive: #34C759;
+      --warning: #FF9500;
+
+      --ink: #1C1C1E;
+      --ink2: #3A3A3C;
+      --muted: #8E8E93;
+      --muted2: #AEAEB2;
+
+      --bg: #F2F2F7;
+      --card: #FFFFFF;
+      --card2: #F9F9FB;
+      --border: rgba(60, 60, 67, 0.12);
+      --border-light: rgba(60, 60, 67, 0.08);
+
+      --radius-lg: 20px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
+      --shadow-card: 0 2px 16px rgba(0,0,0,0.06);
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+      --section-gap: 28px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, 'Inter', BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header {
+      background: rgba(8,8,14,0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .header-inner {
+      max-width: 880px; margin: 0 auto; padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-mark {
+      width: 32px; height: 32px; background: var(--accent); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 700; font-size: 13px;
+      box-shadow: 0 2px 10px rgba(92, 111, 130, 0.4); flex-shrink: 0;
+    }
+    .brand-text { color: white; min-width: 0; }
+    .brand-title {
+      font-size: 15px; font-weight: 600; letter-spacing: -0.01em;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .brand-subtitle { font-size: 12px; color: var(--muted2); margin-top: 1px; }
+    .header-actions { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
+    .btn-ghost {
+      background: rgba(255,255,255,0.08); color: white;
+      border: 1px solid rgba(255,255,255,0.15); padding: 8px 14px;
+      border-radius: 8px; font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s; font-family: inherit;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.15); }
+    .btn-ghost:focus-visible { outline: 2px solid rgba(255,255,255,0.6); outline-offset: 2px; }
+
+    .lang-switch {
+      display: flex; align-items: center; gap: 4px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 100px; padding: 3px; flex-shrink: 0;
+    }
+    .lang-btn {
+      font-family: inherit; font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.55); background: transparent; border: none;
+      border-radius: 100px; padding: 6px 10px; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 5px; transition: all 0.15s;
+    }
+    .lang-btn:hover { color: #fff; }
+    .lang-btn.active { background: rgba(255,255,255,0.16); color: #fff; }
+    .lang-flag { font-size: 13px; line-height: 1; }
+
+    .hero {
+      background: linear-gradient(170deg, #1A222B 0%, #2A3540 55%, #1A222B 100%);
+      padding: 40px 24px 36px; text-align: center; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(92, 111, 130, 0.35) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero h1 {
+      position: relative; font-size: clamp(24px, 4vw, 32px);
+      font-weight: 800; letter-spacing: -0.03em; margin-bottom: 16px;
+      color: #fff; line-height: 1.2;
+    }
+    .hero p {
+      position: relative; font-size: 14px; color: rgba(200,210,220,0.88);
+      max-width: 640px; margin: 0 auto; line-height: 1.65;
+    }
+
+    main { max-width: 880px; margin: 0 auto; padding: 32px 24px 56px; }
+
+    .card {
+      background: var(--card); border-radius: var(--radius-lg); padding: 28px;
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+      margin-bottom: var(--section-gap);
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; gap: 12px;
+    }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--ink); }
+    .card-badge {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; padding: 4px 8px; border-radius: 100px;
+      background: var(--accent-light); color: var(--accent);
+    }
+    .section-label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--muted); margin: 18px 0 14px;
+    }
+    .section-label:first-of-type { margin-top: 0; }
+    .section-label-accent {
+      width: 3px; height: 12px; border-radius: 2px; background: var(--accent);
+    }
+
+    .input-group { margin-bottom: 14px; }
+    .input-group-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;
+    }
+    .input-group-row.three { grid-template-columns: 1fr 1fr 1fr; }
+    .input-group label {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 12px; font-weight: 500; color: var(--ink2); margin-bottom: 6px;
+    }
+
+    .info-tip {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--accent-light); color: var(--accent);
+      font-size: 10px; font-weight: 700;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: help; position: relative;
+      border: 1px solid rgba(92, 111, 130, 0.2);
+      flex-shrink: 0;
+    }
+    .info-tip:hover, .info-tip:focus-visible, .info-tip.active {
+      background: var(--accent); color: white;
+    }
+    .info-tip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .info-tip::after {
+      content: attr(data-tip);
+      position: absolute; bottom: calc(100% + 10px); left: 50%;
+      transform: translateX(-50%) translateY(4px);
+      background: var(--ink); color: white; padding: 10px 14px;
+      border-radius: var(--radius-sm); font-size: 12px; font-weight: 400;
+      white-space: normal; width: min(260px, 70vw); z-index: 50;
+      line-height: 1.45; box-shadow: var(--shadow-md);
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+    }
+    .info-tip::before {
+      content: ''; position: absolute; bottom: calc(100% + 2px); left: 50%;
+      transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--ink);
+      opacity: 0; visibility: hidden; z-index: 51;
+    }
+    @media (hover: hover) {
+      .info-tip:hover::after, .info-tip:hover::before {
+        opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
+      }
+    }
+    .info-tip.active::after, .info-tip.active::before {
+      opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
+    }
+
+    .input-wrapper { position: relative; }
+    .input-prefix, .input-suffix {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      color: var(--muted); font-size: 13px; pointer-events: none; font-weight: 500;
+    }
+    .input-prefix { left: 12px; }
+    .input-suffix { right: 12px; }
+    input[type="number"], select {
+      width: 100%; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); font-size: 14px; font-family: inherit;
+      color: var(--ink); background: white;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      min-height: 44px;
+    }
+    input.with-suffix { padding-right: 72px; }
+    .input-wrapper:has(.input-prefix) input[type="number"] { padding-left: 28px; }
+    input[type="number"]:focus, select:focus {
+      outline: none; border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(92, 111, 130, 0.15);
+    }
+
+    .yesno-toggle, .cadence-toggle {
+      display: flex; gap: 4px; background: var(--card2);
+      border-radius: 8px; padding: 3px; border: 0.5px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .yesno-toggle { max-width: 280px; }
+    .yesno-btn, .cadence-btn {
+      flex: 1; border: none; background: transparent; border-radius: 6px;
+      padding: 10px 12px; font-size: 13px; font-weight: 600; color: var(--muted);
+      cursor: pointer; font-family: inherit; min-height: 44px; transition: all 0.15s;
+    }
+    .yesno-btn.active, .cadence-btn.active {
+      background: var(--card); color: var(--accent);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .yesno-btn:focus-visible, .cadence-btn:focus-visible {
+      outline: 2px solid var(--accent); outline-offset: 2px;
+    }
+
+    .result-highlight {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+      color: white; padding: 28px 20px; border-radius: var(--radius-md);
+      text-align: center; margin-bottom: var(--section-gap);
+    }
+    .result-highlight.band-stable {
+      background: linear-gradient(135deg, var(--positive) 0%, #2A9D47 100%);
+    }
+    .result-highlight.band-risk {
+      background: linear-gradient(135deg, var(--warning) 0%, #E68600 100%);
+    }
+    .result-highlight.band-bleed {
+      background: linear-gradient(135deg, var(--alert) 0%, #D42E23 100%);
+    }
+    .result-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; opacity: 0.85; margin-bottom: 8px;
+    }
+    .result-value {
+      font-size: clamp(36px, 8vw, 48px); font-weight: 800;
+      letter-spacing: -0.03em; margin-bottom: 6px; font-variant-numeric: tabular-nums;
+    }
+    .result-secondary { font-size: 15px; opacity: 0.92; font-weight: 600; }
+
+    .insight-callout {
+      border-radius: var(--radius-md); padding: 18px 18px 18px 16px;
+      margin-bottom: 14px; font-size: 14px; line-height: 1.6; color: var(--ink2);
+      border-left: 3px solid var(--accent); background: var(--accent-light);
+    }
+    .insight-callout.verdict {
+      border-left-color: var(--warning); background: rgba(255, 149, 0, 0.1);
+    }
+    .insight-callout.flag-blocked {
+      border-left-color: var(--accent); background: var(--accent-light);
+    }
+    .insight-callout.flag-satisfaction {
+      border-left-color: var(--warning); background: rgba(255, 149, 0, 0.1);
+    }
+    .insight-callout.closing {
+      border-left-color: var(--accent); background: var(--accent-light);
+      margin-bottom: var(--section-gap);
+    }
+    .insight-callout-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 8px; color: var(--accent);
+    }
+    .insight-callout.verdict .insight-callout-title { color: var(--warning); }
+    .insight-callout.flag-satisfaction .insight-callout-title { color: var(--warning); }
+
+    .breakdown-section {
+      background: white; border-radius: var(--radius-lg); padding: 28px;
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+      margin-bottom: var(--section-gap);
+    }
+    .insight-title {
+      font-size: 14px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--muted); margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sec-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+    .breakdown-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .breakdown-table {
+      width: 100%; border-collapse: collapse; font-size: 13px; min-width: 420px;
+    }
+    .breakdown-table th {
+      text-align: left; padding: 12px; font-size: 11px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
+      border-bottom: 2px solid var(--border);
+    }
+    .breakdown-table th.numeric { text-align: right; }
+    .breakdown-table td {
+      padding: 12px; border-bottom: 1px solid var(--border-light); color: var(--ink2);
+    }
+    .breakdown-table td.numeric {
+      text-align: right; font-variant-numeric: tabular-nums; font-weight: 500;
+    }
+    .breakdown-table tr.margin-row { background: var(--accent-light); font-weight: 700; }
+    .breakdown-table tr.margin-row td { border-bottom: none; color: var(--accent-dark); }
+
+    .methodology-cta {
+      position: relative;
+      background: linear-gradient(145deg, #1A222B 0%, #2A3540 50%, #1A222B 100%);
+      color: white; border-radius: var(--radius-lg); padding: 36px 32px;
+      margin-bottom: var(--section-gap); overflow: hidden;
+    }
+    .methodology-cta::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 90% 10%, rgba(92,111,130,0.35), transparent 60%);
+      pointer-events: none;
+    }
+    .methodology-content { position: relative; }
+    .methodology-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: rgba(200,210,220,0.85); margin-bottom: 12px;
+    }
+    .methodology-text {
+      font-size: 14px; line-height: 1.65; color: rgba(220,228,235,0.92); margin-bottom: 16px;
+    }
+    .contact-route {
+      margin: 16px 0 0; padding: 14px 16px; border-radius: 12px;
+      border: 0.5px solid rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 1px rgba(92, 111, 130, 0.15), 0 0 28px rgba(92, 111, 130, 0.25);
+      font-size: 15px; line-height: 1.7; font-weight: 500;
+    }
+    .contact-route a {
+      color: #fff; font-weight: 600; text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+    }
+    .contact-route a:hover { border-bottom-color: #fff; }
+
+    .action-bar {
+      display: flex; gap: 8px; justify-content: center; margin-top: 8px; flex-wrap: wrap;
+    }
+    .btn {
+      padding: 10px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500;
+      cursor: pointer; border: 1px solid var(--border); background: white; color: var(--ink);
+      transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+      font-family: inherit; min-height: 44px;
+    }
+    .btn:hover { background: var(--bg); border-color: var(--accent); }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+    .btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+
+    .framework-attribution {
+      border-top: 1px solid var(--border); padding: 20px 24px; background: var(--bg); margin-top: 32px;
+    }
+    .attribution-content {
+      max-width: 880px; margin: 0 auto; display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--muted);
+    }
+    .attribution-text strong { color: var(--ink2); font-weight: 600; }
+    .attribution-link { color: var(--accent); font-weight: 600; text-decoration: none; }
+    .attribution-link:hover { text-decoration: underline; }
+
+    footer {
+      max-width: 880px; margin: 24px auto 0; padding: 24px; text-align: center;
+      font-size: 13px; color: var(--muted);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--ink); color: white; padding: 10px 16px; border-radius: 100px;
+      font-size: 13px; font-weight: 500; opacity: 0; pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s; z-index: 300; box-shadow: var(--shadow-md);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 640px) {
+      html, body { overflow-x: clip; }
+      .brand-title { font-size: 13px; }
+      .header-inner {
+        padding: 10px 12px; padding-top: calc(10px + env(safe-area-inset-top)); gap: 8px;
+      }
+      .lang-btn { padding: 8px 9px; min-height: 36px; gap: 0; font-size: 0; }
+      .lang-flag { font-size: 15px; }
+      main {
+        padding: 24px max(12px, env(safe-area-inset-left)) calc(28px + env(safe-area-inset-bottom));
+        padding-right: max(12px, env(safe-area-inset-right));
+      }
+      .input-group-row, .input-group-row.three { grid-template-columns: 1fr; }
+      input[type="number"], select { font-size: 16px !important; }
+      .card, .breakdown-section { padding: 20px 16px; }
+      .methodology-cta { padding: 28px 18px; }
+      .yesno-toggle, .cadence-toggle { max-width: none; }
+      .action-bar .btn { flex: 1 1 140px; justify-content: center; }
+    }
+
+    @media print {
+      header, .no-print, .toast { display: none !important; }
+      .result-highlight, .methodology-cta, .insight-callout {
+        -webkit-print-color-adjust: exact; print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark">OR</div>
+        <div class="brand-text">
+          <div class="brand-title" data-i18n="brandTitle">Owner Retention Diagnostic</div>
+          <div class="brand-subtitle" data-i18n="brandSubtitle">Operator Series</div>
+        </div>
+      </div>
+      <div class="header-actions no-print">
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-btn active" data-lang="en" aria-pressed="true"><span class="lang-flag" aria-hidden="true">🇬🇧</span> EN</button>
+          <button type="button" class="lang-btn" data-lang="it" aria-pressed="false"><span class="lang-flag" aria-hidden="true">🇮🇹</span> IT</button>
+          <button type="button" class="lang-btn" data-lang="de" aria-pressed="false"><span class="lang-flag" aria-hidden="true">🇩🇪</span> DE</button>
+        </div>
+        <button class="btn-ghost" onclick="resetForm()" type="button" data-i18n="resetBtn">Reset</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1 data-i18n="heroTitle">Losing an owner is losing the unit. Most managers only notice after it happens.</h1>
+    <p data-i18n="heroSubtitle">Guest churn gets tracked closely. Owner churn rarely does, even though it costs you the property entirely, not just one booking.</p>
+  </div>
+
+  <main>
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" data-i18n="cardTitle">Your owner book</div>
+        <span class="card-badge" data-i18n="cardBadge">Retention signals</span>
+      </div>
+
+      <div class="section-label">
+        <span class="section-label-accent"></span>
+        <span data-i18n="secBook">Book size and movement</span>
+      </div>
+
+      <div class="input-group-row">
+        <div class="input-group">
+          <label for="totalOwners"><span data-i18n="lblTotalOwners">Total owners currently under management</span></label>
+          <div class="input-wrapper">
+            <input type="number" id="totalOwners" value="40" min="1" step="1" inputmode="numeric">
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="ownersGained"><span data-i18n="lblGained">Owners gained in the last 12 months</span></label>
+          <div class="input-wrapper">
+            <input type="number" id="ownersGained" value="3" min="0" step="1" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">
+        <span class="section-label-accent"></span>
+        <span data-i18n="secLost">Owners lost in the last 12 months</span>
+      </div>
+
+      <div class="input-group-row three">
+        <div class="input-group">
+          <label for="switchedPM">
+            <span data-i18n="lblSwitched">Switched to a different PM</span>
+            <span class="info-tip" tabindex="0" data-i18n-tip="tipSwitched" data-tip="Only this category counts as true retention churn.">i</span>
+          </label>
+          <div class="input-wrapper">
+            <input type="number" id="switchedPM" value="2" min="0" step="1" inputmode="numeric">
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="soldProperty"><span data-i18n="lblSold">Sold the property</span></label>
+          <div class="input-wrapper">
+            <input type="number" id="soldProperty" value="2" min="0" step="1" inputmode="numeric">
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="pulledOff"><span data-i18n="lblPulled">Pulled off rental entirely</span></label>
+          <div class="input-wrapper">
+            <input type="number" id="pulledOff" value="1" min="0" step="1" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">
+        <span class="section-label-accent"></span>
+        <span data-i18n="secSignals">Retention signals</span>
+      </div>
+
+      <div class="input-group-row">
+        <div class="input-group">
+          <label for="avgTenure"><span data-i18n="lblTenure">Average owner tenure</span></label>
+          <div class="input-wrapper">
+            <input type="number" id="avgTenure" value="2.5" min="0" step="0.5" class="with-suffix" inputmode="decimal">
+            <span class="input-suffix" data-i18n="suffixYears">years</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="revenueGap">
+            <span data-i18n="lblRevenueGap">Revenue gap vs. what you promised at signing</span>
+            <span class="info-tip" tabindex="0" data-i18n-tip="tipRevenueGap" data-tip="Usually the sharpest driver of owner churn. How far actual delivered revenue sits below what was promised when they signed.">i</span>
+          </label>
+          <div class="input-wrapper">
+            <input type="number" id="revenueGap" value="8" min="0" max="100" step="1" class="with-suffix" inputmode="numeric">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="blockedDays">
+          <span data-i18n="lblBlocked">Owner-blocked days per year</span>
+          <span class="info-tip" tabindex="0" data-i18n-tip="tipBlocked" data-tip="Days the owner reserves the unit for themselves. This reduces earning potential but is a different risk than churn itself.">i</span>
+        </label>
+        <div class="input-wrapper">
+          <input type="number" id="blockedDays" value="35" min="0" step="1" class="with-suffix" inputmode="numeric">
+          <span class="input-suffix" data-i18n="suffixDays">days</span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label id="cadenceLabel"><span data-i18n="lblCadence">Reporting cadence</span></label>
+        <div class="cadence-toggle" role="group" aria-labelledby="cadenceLabel">
+          <button type="button" class="cadence-btn" data-cadence="none" onclick="setCadence('none')" data-i18n="cadenceNone">None</button>
+          <button type="button" class="cadence-btn active" data-cadence="annual" onclick="setCadence('annual')" data-i18n="cadenceAnnual">Annual</button>
+          <button type="button" class="cadence-btn" data-cadence="quarterly" onclick="setCadence('quarterly')" data-i18n="cadenceQuarterly">Quarterly</button>
+          <button type="button" class="cadence-btn" data-cadence="monthly" onclick="setCadence('monthly')" data-i18n="cadenceMonthly">Monthly</button>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label id="satisfactionLabel">
+          <span data-i18n="lblSatisfaction">Do you collect any direct owner satisfaction data, beyond assuming no news is good news?</span>
+        </label>
+        <div class="yesno-toggle" role="group" aria-labelledby="satisfactionLabel">
+          <button type="button" class="yesno-btn" id="satYes" onclick="setSatisfaction('yes')" data-i18n="btnYes">Yes</button>
+          <button type="button" class="yesno-btn active" id="satNo" onclick="setSatisfaction('no')" data-i18n="btnNo">No</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="resultsPanel">
+      <div class="result-highlight band-risk" id="resultHighlight">
+        <div class="result-label" data-i18n="resultLabel">Owner Retention Score</div>
+        <div class="result-value" id="scoreValue">—</div>
+        <div class="result-secondary" id="bandLabel">—</div>
+      </div>
+
+      <div class="insight-callout verdict" id="verdictCallout">
+        <div class="insight-callout-title" id="verdictTitle"></div>
+        <div id="verdictText"></div>
+      </div>
+
+      <div class="insight-callout flag-blocked" id="blockedCallout" style="display:none;">
+        <div class="insight-callout-title" data-i18n="flagBlockedTitle">Blocked availability</div>
+        <div data-i18n="flagBlockedText">Owners blocking more than a month a year reduces your earning potential independently of churn. Worth a direct conversation about whether the current arrangement still works for them.</div>
+      </div>
+
+      <div class="insight-callout flag-satisfaction" id="satisfactionCallout" style="display:none;">
+        <div class="insight-callout-title" data-i18n="flagSatTitle">Missing satisfaction signal</div>
+        <div data-i18n="flagSatText">You are not collecting any direct signal on how owners actually feel. Silence is not the same as satisfaction, most churn is invisible until the owner has already decided to leave.</div>
+      </div>
+
+      <div class="insight-callout closing" id="closingCallout">
+        <div class="insight-callout-title" data-i18n="closingTitle">Persuasion angle</div>
+        <div data-i18n="closingText">Recurring owner complaints are not just a retention risk. They are also the clearest, most credible case you can make to an owner for investing in their own property, real feedback carries more weight than a generic upgrade pitch.</div>
+      </div>
+
+      <div class="breakdown-section">
+        <div class="insight-title">
+          <span style="color: var(--accent);">📊</span>
+          <span data-i18n="breakdownTitle">Score breakdown</span>
+        </div>
+        <p class="sec-desc" data-i18n="breakdownDesc">True churn and revenue gap share the core score. Reporting cadence adjusts it. Sold and pulled-off-rental exits are shown for context but do not count as retention failures.</p>
+        <div class="breakdown-table-wrap">
+          <table class="breakdown-table">
+            <thead>
+              <tr>
+                <th data-i18n="thSignal">Signal</th>
+                <th class="numeric" data-i18n="thInput">Your input</th>
+                <th class="numeric" data-i18n="thScore">Score / effect</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-i18n="rowChurn">True churn rate (switched PM)</td>
+                <td class="numeric" id="bd_churn_in">—</td>
+                <td class="numeric" id="bd_churn_score">—</td>
+              </tr>
+              <tr>
+                <td data-i18n="rowGap">Revenue gap vs promise</td>
+                <td class="numeric" id="bd_gap_in">—</td>
+                <td class="numeric" id="bd_gap_score">—</td>
+              </tr>
+              <tr>
+                <td data-i18n="rowCore">Core score (50/50)</td>
+                <td class="numeric">—</td>
+                <td class="numeric" id="bd_core">—</td>
+              </tr>
+              <tr>
+                <td data-i18n="rowCadence">Reporting cadence</td>
+                <td class="numeric" id="bd_cadence_in">—</td>
+                <td class="numeric" id="bd_cadence_score">—</td>
+              </tr>
+              <tr>
+                <td data-i18n="rowTenure">Average tenure</td>
+                <td class="numeric" id="bd_tenure_in">—</td>
+                <td class="numeric" data-i18n="rowContextOnly">Context only</td>
+              </tr>
+              <tr>
+                <td data-i18n="rowBlocked">Owner-blocked days</td>
+                <td class="numeric" id="bd_blocked_in">—</td>
+                <td class="numeric" id="bd_blocked_effect">—</td>
+              </tr>
+              <tr>
+                <td data-i18n="rowSat">Satisfaction data</td>
+                <td class="numeric" id="bd_sat_in">—</td>
+                <td class="numeric" id="bd_sat_effect">—</td>
+              </tr>
+              <tr class="margin-row">
+                <td data-i18n="rowFinal">Final score</td>
+                <td class="numeric">—</td>
+                <td class="numeric" id="bd_final">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="methodology-cta">
+      <div class="methodology-content">
+        <div class="methodology-label" data-i18n="methodLabel">What this means for your operation</div>
+        <p class="methodology-text" data-i18n="methodText">
+          Owner churn is usually invisible until it has already happened, an owner does not announce they are shopping around, they just quietly leave when the contract allows. The operators who track revenue delivered against revenue promised, and who ask owners directly rather than assuming silence means satisfaction, are the ones who catch the pattern before it costs them the property.
+        </p>
+        <p class="contact-route" data-i18n="methodContact" data-i18n-html>
+          Building that owner-retention visibility into how you operate is the work I do with operators. If you want to talk it through: <a href="mailto:rbisschoff@gmail.com?subject=Owner%20Retention%20Diagnostic" data-contact-tool="owner-retention-diagnostic">rbisschoff@gmail.com</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="action-bar no-print">
+      <button class="btn btn-primary" onclick="runScore()" type="button" data-i18n="actRecalculate">Recalculate</button>
+      <button class="btn" onclick="copySummary()" type="button" data-i18n="actCopySummary">Copy Summary</button>
+      <button class="btn" onclick="window.print()" type="button" data-i18n="actPrint">Print / PDF</button>
+    </div>
+  </main>
+
+  <div class="framework-attribution">
+    <div class="attribution-content">
+      <div class="attribution-text" data-i18n="attributionText" data-i18n-html>
+        <strong>Framework by Roger Bisschoff</strong> · First published 2026 · Part of the Operator Intelligence Suite
+      </div>
+      <a href="https://rbisschoff.github.io/operator-intelligence-suite/" class="attribution-link" data-i18n="attributionLink">View the full suite →</a>
+    </div>
+  </div>
+
+  <footer>
+    <p data-i18n="footerP1" data-i18n-html>Part of the <strong>Operator Series</strong> by <a href="https://linkedin.com/in/roger-bisschoff" target="_blank" rel="noopener noreferrer">Roger Bisschoff</a></p>
+    <p style="margin-top: 8px;" data-i18n="footerP2">Losing an owner is losing the unit.</p>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    let currentLang = 'en';
+    let reportingCadence = 'annual';
+    let satisfactionData = 'no';
+    let lastResult = null;
+    let completionTracked = false;
+
+    const DEFAULTS = {
+      totalOwners: 40,
+      switchedPM: 2,
+      soldProperty: 2,
+      pulledOff: 1,
+      ownersGained: 3,
+      avgTenure: 2.5,
+      revenueGap: 8,
+      blockedDays: 35,
+      cadence: 'annual',
+      satisfaction: 'no'
+    };
+
+    const CADENCE_MOD = { none: -8, annual: -4, quarterly: 0, monthly: 4 };
+
+    const I18N = {
+      en: {
+        brandTitle: 'Owner Retention Diagnostic',
+        brandSubtitle: 'Operator Series',
+        resetBtn: 'Reset',
+        heroTitle: 'Losing an owner is losing the unit. Most managers only notice after it happens.',
+        heroSubtitle: 'Guest churn gets tracked closely. Owner churn rarely does, even though it costs you the property entirely, not just one booking.',
+        cardTitle: 'Your owner book',
+        cardBadge: 'Retention signals',
+        secBook: 'Book size and movement',
+        secLost: 'Owners lost in the last 12 months',
+        secSignals: 'Retention signals',
+        lblTotalOwners: 'Total owners currently under management',
+        lblGained: 'Owners gained in the last 12 months',
+        lblSwitched: 'Switched to a different PM',
+        tipSwitched: 'Only this category counts as true retention churn.',
+        lblSold: 'Sold the property',
+        lblPulled: 'Pulled off rental entirely',
+        lblTenure: 'Average owner tenure',
+        suffixYears: 'years',
+        lblRevenueGap: 'Revenue gap vs. what you promised at signing',
+        tipRevenueGap: 'Usually the sharpest driver of owner churn. How far actual delivered revenue sits below what was promised when they signed.',
+        lblBlocked: 'Owner-blocked days per year',
+        tipBlocked: 'Days the owner reserves the unit for themselves. This reduces earning potential but is a different risk than churn itself.',
+        suffixDays: 'days',
+        lblCadence: 'Reporting cadence',
+        cadenceNone: 'None',
+        cadenceAnnual: 'Annual',
+        cadenceQuarterly: 'Quarterly',
+        cadenceMonthly: 'Monthly',
+        lblSatisfaction: 'Do you collect any direct owner satisfaction data, beyond assuming no news is good news?',
+        btnYes: 'Yes',
+        btnNo: 'No',
+        resultLabel: 'Owner Retention Score',
+        bandStable: 'Stable book',
+        bandRisk: 'At-risk pockets',
+        bandBleed: 'Active bleed',
+        verdictStable: 'Your owner relationships are holding. Keep the reporting cadence that got you here.',
+        verdictRisk: 'Some part of your book is quietly vulnerable. The revenue gap or reporting cadence is usually where to look first.',
+        verdictBleed: 'You are losing owners faster than most managers realise until a pattern becomes visible in hindsight. This is worth addressing directly, not just tracking.',
+        flagBlockedTitle: 'Blocked availability',
+        flagBlockedText: 'Owners blocking more than a month a year reduces your earning potential independently of churn. Worth a direct conversation about whether the current arrangement still works for them.',
+        flagSatTitle: 'Missing satisfaction signal',
+        flagSatText: 'You are not collecting any direct signal on how owners actually feel. Silence is not the same as satisfaction, most churn is invisible until the owner has already decided to leave.',
+        closingTitle: 'Persuasion angle',
+        closingText: 'Recurring owner complaints are not just a retention risk. They are also the clearest, most credible case you can make to an owner for investing in their own property, real feedback carries more weight than a generic upgrade pitch.',
+        breakdownTitle: 'Score breakdown',
+        breakdownDesc: 'True churn and revenue gap share the core score. Reporting cadence adjusts it. Sold and pulled-off-rental exits are shown for context but do not count as retention failures.',
+        thSignal: 'Signal',
+        thInput: 'Your input',
+        thScore: 'Score / effect',
+        rowChurn: 'True churn rate (switched PM)',
+        rowGap: 'Revenue gap vs promise',
+        rowCore: 'Core score (50/50)',
+        rowCadence: 'Reporting cadence',
+        rowTenure: 'Average tenure',
+        rowBlocked: 'Owner-blocked days',
+        rowSat: 'Satisfaction data',
+        rowFinal: 'Final score',
+        rowContextOnly: 'Context only',
+        effectFlag: 'Flag only',
+        effectOk: 'Within range',
+        methodLabel: 'What this means for your operation',
+        methodText: 'Owner churn is usually invisible until it has already happened, an owner does not announce they are shopping around, they just quietly leave when the contract allows. The operators who track revenue delivered against revenue promised, and who ask owners directly rather than assuming silence means satisfaction, are the ones who catch the pattern before it costs them the property.',
+        methodContact: 'Building that owner-retention visibility into how you operate is the work I do with operators. If you want to talk it through: <a href="mailto:rbisschoff@gmail.com?subject=Owner%20Retention%20Diagnostic" data-contact-tool="owner-retention-diagnostic">rbisschoff@gmail.com</a>',
+        actRecalculate: 'Recalculate',
+        actCopySummary: 'Copy Summary',
+        actPrint: 'Print / PDF',
+        attributionText: '<strong>Framework by Roger Bisschoff</strong> · First published 2026 · Part of the Operator Intelligence Suite',
+        attributionLink: 'View the full suite →',
+        footerP1: 'Part of the <strong>Operator Series</strong> by <a href="https://linkedin.com/in/roger-bisschoff" target="_blank" rel="noopener noreferrer">Roger Bisschoff</a>',
+        footerP2: 'Losing an owner is losing the unit.',
+        toastCopied: 'Summary copied',
+        toastCopyFail: 'Copy failed, text shown below',
+        summaryTitle: 'Owner Retention Diagnostic: summary',
+        summaryScore: 'Score: {score} / 100 ({band})',
+        summaryInputs: 'Inputs',
+        summaryToolUrl: 'https://rbisschoff.github.io/owner-retention-diagnostic/',
+        summaryContact: 'Building that owner-retention visibility into how you operate is the work I do with operators. If you want to talk it through: rbisschoff@gmail.com',
+        summaryFlags: 'Flags',
+        summaryNone: 'None'
+      },
+      it: {
+        brandTitle: 'Owner Retention Diagnostic',
+        brandSubtitle: 'Operator Series',
+        resetBtn: 'Reimposta',
+        heroTitle: 'Perdere un proprietario significa perdere l\'unità. La maggior parte dei gestori se ne accorge solo dopo.',
+        heroSubtitle: 'Il churn degli ospiti viene monitorato da vicino. Quello dei proprietari quasi mai, anche se ti costa l\'intera proprietà, non solo una prenotazione.',
+        cardTitle: 'Il tuo portafoglio proprietari',
+        cardBadge: 'Segnali di retention',
+        secBook: 'Dimensione e movimenti del portafoglio',
+        secLost: 'Proprietari persi negli ultimi 12 mesi',
+        secSignals: 'Segnali di retention',
+        lblTotalOwners: 'Proprietari attualmente in gestione',
+        lblGained: 'Proprietari acquisiti negli ultimi 12 mesi',
+        lblSwitched: 'Passati a un altro property manager',
+        tipSwitched: 'Solo questa categoria conta come vero churn di retention.',
+        lblSold: 'Hanno venduto la proprietà',
+        lblPulled: 'Tolti dall\'affitto del tutto',
+        lblTenure: 'Anzianità media del proprietario',
+        suffixYears: 'anni',
+        lblRevenueGap: 'Gap di ricavo rispetto a quanto promesso alla firma',
+        tipRevenueGap: 'Di solito il driver più netto del churn. Quanto il ricavo effettivamente consegnato resta sotto quanto promesso alla firma.',
+        lblBlocked: 'Giorni bloccati dal proprietario all\'anno',
+        tipBlocked: 'Giorni in cui il proprietario tiene l\'unità per sé. Riduce il potenziale di ricavo ma è un rischio diverso dal churn.',
+        suffixDays: 'giorni',
+        lblCadence: 'Cadenza di reporting',
+        cadenceNone: 'Nessuna',
+        cadenceAnnual: 'Annuale',
+        cadenceQuarterly: 'Trimestrale',
+        cadenceMonthly: 'Mensile',
+        lblSatisfaction: 'Raccogli dati diretti di soddisfazione dei proprietari, o assumi che nessun segnale sia una buona notizia?',
+        btnYes: 'Sì',
+        btnNo: 'No',
+        resultLabel: 'Owner Retention Score',
+        bandStable: 'Portafoglio stabile',
+        bandRisk: 'Tasche a rischio',
+        bandBleed: 'Perdite attive',
+        verdictStable: 'Le relazioni con i proprietari tengono. Mantieni la cadenza di reporting che ti ha portato qui.',
+        verdictRisk: 'Una parte del portafoglio è silenziosamente vulnerabile. Il gap di ricavo o la cadenza di reporting sono di solito il primo posto da guardare.',
+        verdictBleed: 'Stai perdendo proprietari più in fretta di quanto la maggior parte dei gestori capisca, finché il pattern non diventa evidente a posteriori. Vale la pena affrontarlo direttamente, non solo monitorarlo.',
+        flagBlockedTitle: 'Disponibilità bloccata',
+        flagBlockedText: 'Proprietari che bloccano più di un mese all\'anno riducono il potenziale di ricavo indipendentemente dal churn. Vale una conversazione diretta su quanto l\'accordo attuale funzioni ancora per loro.',
+        flagSatTitle: 'Segnale di soddisfazione assente',
+        flagSatText: 'Non stai raccogliendo alcun segnale diretto su come i proprietari si sentono davvero. Il silenzio non è soddisfazione, la maggior parte del churn resta invisibile finché il proprietario ha già deciso di andarsene.',
+        closingTitle: 'Angolo di persuasione',
+        closingText: 'I reclami ricorrenti dei proprietari non sono solo un rischio di retention. Sono anche il caso più chiaro e credibile che puoi fare a un proprietario per investire nella propria proprietà: un feedback reale pesa più di un pitch generico di upgrade.',
+        breakdownTitle: 'Dettaglio del punteggio',
+        breakdownDesc: 'Il churn vero e il gap di ricavo condividono il punteggio core. La cadenza di reporting lo aggiusta. Vendite e uscite dal noleggio restano contestuali e non contano come fallimenti di retention.',
+        thSignal: 'Segnale',
+        thInput: 'Il tuo input',
+        thScore: 'Punteggio / effetto',
+        rowChurn: 'Tasso di churn vero (cambio PM)',
+        rowGap: 'Gap di ricavo vs promessa',
+        rowCore: 'Punteggio core (50/50)',
+        rowCadence: 'Cadenza di reporting',
+        rowTenure: 'Anzianità media',
+        rowBlocked: 'Giorni bloccati dal proprietario',
+        rowSat: 'Dati di soddisfazione',
+        rowFinal: 'Punteggio finale',
+        rowContextOnly: 'Solo contesto',
+        effectFlag: 'Solo flag',
+        effectOk: 'Nella fascia',
+        methodLabel: 'Cosa significa per la tua operazione',
+        methodText: 'Il churn dei proprietari di solito resta invisibile finché è già successo: un proprietario non annuncia che sta cercando altrove, se ne va in silenzio quando il contratto lo permette. Gli operatori che confrontano ricavo consegnato e ricavo promesso, e che chiedono direttamente invece di assumere che il silenzio sia soddisfazione, sono quelli che intercettano il pattern prima che costi loro la proprietà.',
+        methodContact: 'Costruire quella visibilità sulla retention dei proprietari nel modo in cui operi è il lavoro che faccio con gli operatori. Se vuoi parlarne: <a href="mailto:rbisschoff@gmail.com?subject=Owner%20Retention%20Diagnostic" data-contact-tool="owner-retention-diagnostic">rbisschoff@gmail.com</a>',
+        actRecalculate: 'Ricalcola',
+        actCopySummary: 'Copia riepilogo',
+        actPrint: 'Stampa / PDF',
+        attributionText: '<strong>Framework di Roger Bisschoff</strong> · Prima pubblicazione 2026 · Parte dell\'Operator Intelligence Suite',
+        attributionLink: 'Vedi la suite completa →',
+        footerP1: 'Parte dell\'<strong>Operator Series</strong> di <a href="https://linkedin.com/in/roger-bisschoff" target="_blank" rel="noopener noreferrer">Roger Bisschoff</a>',
+        footerP2: 'Perdere un proprietario significa perdere l\'unità.',
+        toastCopied: 'Riepilogo copiato',
+        toastCopyFail: 'Copia non riuscita, testo qui sotto',
+        summaryTitle: 'Owner Retention Diagnostic: riepilogo',
+        summaryScore: 'Punteggio: {score} / 100 ({band})',
+        summaryInputs: 'Input',
+        summaryToolUrl: 'https://rbisschoff.github.io/owner-retention-diagnostic/',
+        summaryContact: 'Costruire quella visibilità sulla retention dei proprietari nel modo in cui operi è il lavoro che faccio con gli operatori. Se vuoi parlarne: rbisschoff@gmail.com',
+        summaryFlags: 'Flag',
+        summaryNone: 'Nessuno'
+      },
+      de: {
+        brandTitle: 'Owner Retention Diagnostic',
+        brandSubtitle: 'Operator Series',
+        resetBtn: 'Zurücksetzen',
+        heroTitle: 'Einen Eigentümer zu verlieren heißt, die Unit zu verlieren. Die meisten Manager merken es erst danach.',
+        heroSubtitle: 'Gäste-Churn wird eng verfolgt. Eigentümer-Churn selten, obwohl er Sie die gesamte Immobilie kostet, nicht nur eine Buchung.',
+        cardTitle: 'Ihr Eigentümer-Buch',
+        cardBadge: 'Retention-Signale',
+        secBook: 'Buchgröße und Bewegung',
+        secLost: 'Verlorene Eigentümer in den letzten 12 Monaten',
+        secSignals: 'Retention-Signale',
+        lblTotalOwners: 'Eigentümer derzeit unter Verwaltung',
+        lblGained: 'Gewonnene Eigentümer in den letzten 12 Monaten',
+        lblSwitched: 'Zu einem anderen PM gewechselt',
+        tipSwitched: 'Nur diese Kategorie zählt als echter Retention-Churn.',
+        lblSold: 'Immobilie verkauft',
+        lblPulled: 'Komplett aus der Vermietung genommen',
+        lblTenure: 'Durchschnittliche Eigentümer-Dauer',
+        suffixYears: 'Jahre',
+        lblRevenueGap: 'Umsatzlücke gegenüber dem Versprechen bei Vertragsabschluss',
+        tipRevenueGap: 'Meist der schärfste Treiber von Eigentümer-Churn. Wie weit der tatsächlich gelieferte Umsatz unter dem Versprechen bei der Unterschrift liegt.',
+        lblBlocked: 'Eigentümer-gesperrte Tage pro Jahr',
+        tipBlocked: 'Tage, an denen der Eigentümer die Unit für sich selbst blockiert. Das senkt das Ertragspotenzial, ist aber ein anderes Risiko als Churn.',
+        suffixDays: 'Tage',
+        lblCadence: 'Reporting-Rhythmus',
+        cadenceNone: 'Keiner',
+        cadenceAnnual: 'Jährlich',
+        cadenceQuarterly: 'Vierteljährlich',
+        cadenceMonthly: 'Monatlich',
+        lblSatisfaction: 'Erheben Sie direkte Eigentümer-Zufriedenheitsdaten, oder nehmen Sie an, dass keine Nachricht gute Nachricht ist?',
+        btnYes: 'Ja',
+        btnNo: 'Nein',
+        resultLabel: 'Owner Retention Score',
+        bandStable: 'Stabiles Buch',
+        bandRisk: 'Risikotaschen',
+        bandBleed: 'Aktiver Verlust',
+        verdictStable: 'Ihre Eigentümerbeziehungen halten. Behalten Sie den Reporting-Rhythmus, der Sie hierher gebracht hat.',
+        verdictRisk: 'Ein Teil Ihres Buchs ist still verwundbar. Die Umsatzlücke oder der Reporting-Rhythmus ist meist der erste Blickpunkt.',
+        verdictBleed: 'Sie verlieren Eigentümer schneller, als die meisten Manager merken, bis das Muster rückblickend sichtbar wird. Das lohnt eine direkte Ansprache, nicht nur Tracking.',
+        flagBlockedTitle: 'Gesperrte Verfügbarkeit',
+        flagBlockedText: 'Eigentümer, die mehr als einen Monat im Jahr blockieren, senken Ihr Ertragspotenzial unabhängig vom Churn. Ein direktes Gespräch, ob die aktuelle Vereinbarung für sie noch passt, lohnt sich.',
+        flagSatTitle: 'Fehlendes Zufriedenheitssignal',
+        flagSatText: 'Sie erheben kein direktes Signal dazu, wie Eigentümer sich wirklich fühlen. Schweigen ist nicht Zufriedenheit, die meisten Churn-Fälle bleiben unsichtbar, bis der Eigentümer schon entschieden hat zu gehen.',
+        closingTitle: 'Überzeugungshebel',
+        closingText: 'Wiederkehrende Eigentümerbeschwerden sind nicht nur ein Retention-Risiko. Sie sind auch der klarste, glaubwürdigste Fall, den Sie einem Eigentümer machen können, in die eigene Immobilie zu investieren: echtes Feedback wiegt schwerer als ein generischer Upgrade-Pitch.',
+        breakdownTitle: 'Score-Aufschlüsselung',
+        breakdownDesc: 'Echter Churn und Umsatzlücke teilen sich den Core-Score. Der Reporting-Rhythmus justiert ihn. Verkauf und Ausstieg aus der Vermietung bleiben Kontext und zählen nicht als Retention-Fehler.',
+        thSignal: 'Signal',
+        thInput: 'Ihre Eingabe',
+        thScore: 'Score / Wirkung',
+        rowChurn: 'Echte Churn-Rate (PM-Wechsel)',
+        rowGap: 'Umsatzlücke vs. Versprechen',
+        rowCore: 'Core-Score (50/50)',
+        rowCadence: 'Reporting-Rhythmus',
+        rowTenure: 'Durchschnittliche Dauer',
+        rowBlocked: 'Eigentümer-gesperrte Tage',
+        rowSat: 'Zufriedenheitsdaten',
+        rowFinal: 'Endscore',
+        rowContextOnly: 'Nur Kontext',
+        effectFlag: 'Nur Flag',
+        effectOk: 'Im Rahmen',
+        methodLabel: 'Was das für Ihren Betrieb bedeutet',
+        methodText: 'Eigentümer-Churn bleibt meist unsichtbar, bis er schon passiert ist: ein Eigentümer kündigt nicht an, dass er umschaut, er geht still, wenn der Vertrag es erlaubt. Die Betreiber, die gelieferten Umsatz gegen versprochenen Umsatz halten und Eigentümer direkt fragen, statt Schweigen für Zufriedenheit zu halten, fangen das Muster ab, bevor es sie die Immobilie kostet.',
+        methodContact: 'Diese Eigentümer-Retention-Sichtbarkeit in Ihre Betriebsweise einzubauen, ist die Arbeit, die ich mit Operatoren mache. Wenn Sie darüber sprechen möchten: <a href="mailto:rbisschoff@gmail.com?subject=Owner%20Retention%20Diagnostic" data-contact-tool="owner-retention-diagnostic">rbisschoff@gmail.com</a>',
+        actRecalculate: 'Neu berechnen',
+        actCopySummary: 'Zusammenfassung kopieren',
+        actPrint: 'Drucken / PDF',
+        attributionText: '<strong>Framework von Roger Bisschoff</strong> · Erstveröffentlichung 2026 · Teil der Operator Intelligence Suite',
+        attributionLink: 'Zur vollständigen Suite →',
+        footerP1: 'Teil der <strong>Operator Series</strong> von <a href="https://linkedin.com/in/roger-bisschoff" target="_blank" rel="noopener noreferrer">Roger Bisschoff</a>',
+        footerP2: 'Einen Eigentümer zu verlieren heißt, die Unit zu verlieren.',
+        toastCopied: 'Zusammenfassung kopiert',
+        toastCopyFail: 'Kopieren fehlgeschlagen, Text unten',
+        summaryTitle: 'Owner Retention Diagnostic: Zusammenfassung',
+        summaryScore: 'Score: {score} / 100 ({band})',
+        summaryInputs: 'Eingaben',
+        summaryToolUrl: 'https://rbisschoff.github.io/owner-retention-diagnostic/',
+        summaryContact: 'Diese Eigentümer-Retention-Sichtbarkeit in Ihre Betriebsweise einzubauen, ist die Arbeit, die ich mit Operatoren mache. Wenn Sie darüber sprechen möchten: rbisschoff@gmail.com',
+        summaryFlags: 'Flags',
+        summaryNone: 'Keine'
+      }
+    };
+
+    function t(key) {
+      const pack = I18N[currentLang] || I18N.en;
+      if (pack[key] !== undefined) return pack[key];
+      return I18N.en[key] !== undefined ? I18N.en[key] : key;
+    }
+
+    function tf(key, vars) {
+      let s = t(key);
+      Object.keys(vars || {}).forEach(function (k) {
+        s = s.replace(new RegExp('\\{' + k + '\\}', 'g'), vars[k]);
+      });
+      return s;
+    }
+
+    function clamp(n, min, max) {
+      return Math.min(max, Math.max(min, n));
+    }
+
+    function setCadence(value) {
+      reportingCadence = CADENCE_MOD[value] !== undefined ? value : 'annual';
+      document.querySelectorAll('.cadence-btn').forEach(function (btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-cadence') === reportingCadence);
+      });
+      runScore();
+    }
+
+    function setSatisfaction(value) {
+      satisfactionData = value === 'yes' ? 'yes' : 'no';
+      document.getElementById('satYes').classList.toggle('active', satisfactionData === 'yes');
+      document.getElementById('satNo').classList.toggle('active', satisfactionData === 'no');
+      runScore();
+    }
+
+    function getInputs() {
+      return {
+        totalOwners: Math.max(1, parseFloat(document.getElementById('totalOwners').value) || 1),
+        switchedPM: Math.max(0, parseFloat(document.getElementById('switchedPM').value) || 0),
+        soldProperty: Math.max(0, parseFloat(document.getElementById('soldProperty').value) || 0),
+        pulledOff: Math.max(0, parseFloat(document.getElementById('pulledOff').value) || 0),
+        ownersGained: Math.max(0, parseFloat(document.getElementById('ownersGained').value) || 0),
+        avgTenure: Math.max(0, parseFloat(document.getElementById('avgTenure').value) || 0),
+        revenueGap: clamp(parseFloat(document.getElementById('revenueGap').value) || 0, 0, 100),
+        blockedDays: Math.max(0, parseFloat(document.getElementById('blockedDays').value) || 0),
+        cadence: reportingCadence,
+        satisfaction: satisfactionData
+      };
+    }
+
+    function computeScore(i) {
+      const churnRate = (i.switchedPM / i.totalOwners) * 100;
+      const churnScore = Math.max(0, 100 - churnRate * 8);
+      const revenueGapScore = Math.max(0, 100 - i.revenueGap * 6);
+      const coreScore = churnScore * 0.5 + revenueGapScore * 0.5;
+      const cadenceModifier = CADENCE_MOD[i.cadence] != null ? CADENCE_MOD[i.cadence] : -4;
+      const finalScore = Math.round(clamp(coreScore + cadenceModifier, 0, 100));
+
+      let bandKey = 'bandBleed';
+      let bandClass = 'band-bleed';
+      let verdictKey = 'verdictBleed';
+      if (finalScore >= 75) {
+        bandKey = 'bandStable';
+        bandClass = 'band-stable';
+        verdictKey = 'verdictStable';
+      } else if (finalScore >= 45) {
+        bandKey = 'bandRisk';
+        bandClass = 'band-risk';
+        verdictKey = 'verdictRisk';
+      }
+
+      return {
+        inputs: i,
+        churnRate: churnRate,
+        churnScore: churnScore,
+        revenueGapScore: revenueGapScore,
+        coreScore: coreScore,
+        cadenceModifier: cadenceModifier,
+        finalScore: finalScore,
+        bandKey: bandKey,
+        bandClass: bandClass,
+        verdictKey: verdictKey,
+        showBlockedFlag: i.blockedDays > 30,
+        showSatFlag: i.satisfaction === 'no'
+      };
+    }
+
+    function formatNum(n, digits) {
+      const d = digits === undefined ? 0 : digits;
+      return Number(n).toLocaleString(currentLang === 'de' ? 'de-DE' : currentLang === 'it' ? 'it-IT' : 'en-GB', {
+        minimumFractionDigits: d,
+        maximumFractionDigits: d
+      });
+    }
+
+    function cadenceLabel(key) {
+      if (key === 'none') return t('cadenceNone');
+      if (key === 'annual') return t('cadenceAnnual');
+      if (key === 'quarterly') return t('cadenceQuarterly');
+      if (key === 'monthly') return t('cadenceMonthly');
+      return key;
+    }
+
+    function renderResult(result) {
+      lastResult = result;
+      const el = document.getElementById('resultHighlight');
+      el.className = 'result-highlight ' + result.bandClass;
+      document.getElementById('scoreValue').textContent = String(result.finalScore);
+      document.getElementById('bandLabel').textContent = t(result.bandKey);
+
+      document.getElementById('verdictTitle').textContent = t(result.bandKey);
+      document.getElementById('verdictText').textContent = t(result.verdictKey);
+
+      document.getElementById('blockedCallout').style.display = result.showBlockedFlag ? '' : 'none';
+      document.getElementById('satisfactionCallout').style.display = result.showSatFlag ? '' : 'none';
+
+      const i = result.inputs;
+      document.getElementById('bd_churn_in').textContent = formatNum(result.churnRate, 1) + '%';
+      document.getElementById('bd_churn_score').textContent = formatNum(result.churnScore, 0);
+      document.getElementById('bd_gap_in').textContent = formatNum(i.revenueGap, 0) + '%';
+      document.getElementById('bd_gap_score').textContent = formatNum(result.revenueGapScore, 0);
+      document.getElementById('bd_core').textContent = formatNum(result.coreScore, 0);
+      document.getElementById('bd_cadence_in').textContent = cadenceLabel(i.cadence);
+      document.getElementById('bd_cadence_score').textContent = (result.cadenceModifier > 0 ? '+' : '') + formatNum(result.cadenceModifier, 0);
+      document.getElementById('bd_tenure_in').textContent = formatNum(i.avgTenure, 1) + ' ' + t('suffixYears');
+      document.getElementById('bd_blocked_in').textContent = formatNum(i.blockedDays, 0) + ' ' + t('suffixDays');
+      document.getElementById('bd_blocked_effect').textContent = result.showBlockedFlag ? t('effectFlag') : t('effectOk');
+      document.getElementById('bd_sat_in').textContent = i.satisfaction === 'yes' ? t('btnYes') : t('btnNo');
+      document.getElementById('bd_sat_effect').textContent = result.showSatFlag ? t('effectFlag') : t('effectOk');
+      document.getElementById('bd_final').textContent = formatNum(result.finalScore, 0);
+    }
+
+    function trackCompletion(result) {
+      if (completionTracked) return;
+      if (!result || result.finalScore == null) return;
+      if (typeof gtag !== 'function') return;
+      completionTracked = true;
+      gtag('event', 'owner_retention_diagnostic_completed', {
+        score: result.finalScore,
+        band: result.bandKey,
+        churn_rate: Math.round(result.churnRate)
+      });
+    }
+
+    function runScore() {
+      const result = computeScore(getInputs());
+      renderResult(result);
+      trackCompletion(result);
+    }
+
+    function resetForm() {
+      document.getElementById('totalOwners').value = DEFAULTS.totalOwners;
+      document.getElementById('switchedPM').value = DEFAULTS.switchedPM;
+      document.getElementById('soldProperty').value = DEFAULTS.soldProperty;
+      document.getElementById('pulledOff').value = DEFAULTS.pulledOff;
+      document.getElementById('ownersGained').value = DEFAULTS.ownersGained;
+      document.getElementById('avgTenure').value = DEFAULTS.avgTenure;
+      document.getElementById('revenueGap').value = DEFAULTS.revenueGap;
+      document.getElementById('blockedDays').value = DEFAULTS.blockedDays;
+      setCadence(DEFAULTS.cadence);
+      setSatisfaction(DEFAULTS.satisfaction);
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(function () { toast.classList.remove('show'); }, 2200);
+    }
+
+    function buildSummaryText() {
+      if (!lastResult) return '';
+      const i = lastResult.inputs;
+      const flags = [];
+      if (lastResult.showBlockedFlag) flags.push(t('flagBlockedText'));
+      if (lastResult.showSatFlag) flags.push(t('flagSatText'));
+      return [
+        t('summaryTitle'),
+        '',
+        tf('summaryScore', { score: lastResult.finalScore, band: t(lastResult.bandKey) }),
+        t(lastResult.verdictKey),
+        '',
+        t('summaryInputs'),
+        t('lblTotalOwners') + ': ' + formatNum(i.totalOwners, 0),
+        t('lblSwitched') + ': ' + formatNum(i.switchedPM, 0),
+        t('lblSold') + ': ' + formatNum(i.soldProperty, 0),
+        t('lblPulled') + ': ' + formatNum(i.pulledOff, 0),
+        t('lblGained') + ': ' + formatNum(i.ownersGained, 0),
+        t('lblTenure') + ': ' + formatNum(i.avgTenure, 1) + ' ' + t('suffixYears'),
+        t('lblRevenueGap') + ': ' + formatNum(i.revenueGap, 0) + '%',
+        t('lblBlocked') + ': ' + formatNum(i.blockedDays, 0),
+        t('lblCadence') + ': ' + cadenceLabel(i.cadence),
+        t('lblSatisfaction') + ': ' + (i.satisfaction === 'yes' ? t('btnYes') : t('btnNo')),
+        '',
+        t('summaryFlags'),
+        flags.length ? flags.join('\n') : t('summaryNone'),
+        '',
+        t('closingText'),
+        '',
+        t('summaryToolUrl'),
+        t('summaryContact')
+      ].join('\n');
+    }
+
+    function copySummary() {
+      if (!lastResult) runScore();
+      const text = buildSummaryText();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          showToast(t('toastCopied'));
+        }).catch(function () {
+          window.prompt(t('toastCopyFail'), text);
+        });
+      } else {
+        window.prompt(t('toastCopyFail'), text);
+      }
+    }
+
+    function applyLang(lang) {
+      currentLang = I18N[lang] ? lang : 'en';
+      document.documentElement.lang = currentLang;
+      if (window.updateOisMetadata) window.updateOisMetadata(currentLang);
+
+      document.querySelectorAll('[data-i18n]').forEach(function (el) {
+        const key = el.getAttribute('data-i18n');
+        const val = t(key);
+        if (el.hasAttribute('data-i18n-html') || val.indexOf('<') !== -1) el.innerHTML = val;
+        else el.textContent = val;
+      });
+
+      document.querySelectorAll('[data-i18n-tip]').forEach(function (el) {
+        el.setAttribute('data-tip', t(el.getAttribute('data-i18n-tip')));
+      });
+
+      document.querySelectorAll('.lang-btn').forEach(function (btn) {
+        const on = btn.getAttribute('data-lang') === currentLang;
+        btn.classList.toggle('active', on);
+        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+
+      try { localStorage.setItem('ois-lang', currentLang); } catch (e) {}
+      if (lastResult) renderResult(computeScore(getInputs()));
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        applyLang(btn.getAttribute('data-lang'));
+      });
+    });
+
+    document.querySelectorAll('input[type="number"]').forEach(function (input) {
+      input.addEventListener('input', runScore);
+      input.addEventListener('change', runScore);
+    });
+
+    document.addEventListener('click', function (e) {
+      const tip = e.target.closest('.info-tip');
+      document.querySelectorAll('.info-tip.active').forEach(function (el) {
+        if (el !== tip) el.classList.remove('active');
+      });
+      if (tip) tip.classList.toggle('active');
+
+      const a = e.target.closest('a[data-contact-tool]');
+      if (a && typeof gtag === 'function') {
+        gtag('event', 'contact_click', { tool: a.getAttribute('data-contact-tool') });
+      }
+    });
+
+    applyLang(window.__oisInitialLang || 'en');
+    setCadence(DEFAULTS.cadence);
+    setSatisfaction(DEFAULTS.satisfaction);
+  </script>
+</body>
+</html>

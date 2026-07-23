@@ -333,6 +333,9 @@
     .insight-callout.flag-satisfaction {
       border-left-color: var(--warning); background: rgba(255, 149, 0, 0.1);
     }
+    .insight-callout.flag-cadence {
+      border-left-color: var(--warning); background: rgba(255, 149, 0, 0.1);
+    }
     .insight-callout.flag-occupancy {
       border-left-color: var(--warning); background: rgba(255, 149, 0, 0.1);
     }
@@ -349,6 +352,7 @@
     }
     .insight-callout.verdict .insight-callout-title { color: var(--warning); }
     .insight-callout.flag-satisfaction .insight-callout-title { color: var(--warning); }
+    .insight-callout.flag-cadence .insight-callout-title { color: var(--warning); }
     .insight-callout.flag-occupancy .insight-callout-title { color: var(--warning); }
     .insight-callout.flag-guestfeedback .insight-callout-title { color: var(--warning); }
 
@@ -696,6 +700,11 @@
         <div data-i18n="flagSatText">You are not collecting any direct signal on how owners actually feel. Silence is not the same as satisfaction, most churn is invisible until the owner has already decided to leave.</div>
       </div>
 
+      <div class="insight-callout flag-cadence" id="cadenceCallout" style="display:none;">
+        <div class="insight-callout-title" data-i18n="flagCadenceTitle">Weak reporting cadence</div>
+        <div data-i18n="flagCadenceText">Owners rarely leave over one soft month. They leave when they feel out of the loop long enough to fill the silence with their own story, usually the worst one. A short, fixed update on the same day every month costs little and closes that gap.</div>
+      </div>
+
       <div class="insight-callout flag-acquisition" id="acquisitionCallout" style="display:none;">
         <div class="insight-callout-title" data-i18n="flagAcquisitionTitle">Unrecovered acquisition capital</div>
         <div id="acquisitionCalloutText"></div>
@@ -778,7 +787,7 @@
                 <td class="numeric" data-i18n="rowContextOnly">Context only</td>
               </tr>
               <tr>
-                <td data-i18n="rowRevenueProjected">Projected annual loss at this churn rate</td>
+                <td data-i18n="rowRevenueProjected">Total value lost over typical owner tenure</td>
                 <td class="numeric" id="bd_revenue_projected">-</td>
                 <td class="numeric" data-i18n="rowContextOnly">Context only</td>
               </tr>
@@ -908,7 +917,7 @@
         btnNo: 'No',
         resultLabel: 'Owner Retention Score',
         revenueImpactLabel: 'Revenue Already Walking Out the Door',
-        revenueImpactSecondaryTpl: 'At this churn rate, projected to cost {amount} a year going forward',
+        revenueImpactSecondaryTpl: 'Had those owners stayed their typical tenure, the total value lost is closer to {amount}',
         bandStable: 'Stable book',
         bandRisk: 'At-risk pockets',
         bandBleed: 'Active bleed',
@@ -919,6 +928,8 @@
         flagBlockedText: 'Owners blocking more than a month a year reduces your earning potential independently of churn. Worth a direct conversation about whether the current arrangement still works for them.',
         flagSatTitle: 'Missing satisfaction signal',
         flagSatText: 'You are not collecting any direct signal on how owners actually feel. Silence is not the same as satisfaction, most churn is invisible until the owner has already decided to leave.',
+        flagCadenceTitle: 'Weak reporting cadence',
+        flagCadenceText: 'Owners rarely leave over one soft month. They leave when they feel out of the loop long enough to fill the silence with their own story, usually the worst one. A short, fixed update on the same day every month costs little and closes that gap.',
         flagAcquisitionTitle: 'Unrecovered acquisition capital',
         flagAcquisitionText: '{amount} in acquisition cost tied to owners who switched PM this year ({count} owner(s)), capital that likely was not recouped before they left.',
         flagOccupancyTitle: 'Occupancy beyond agreement',
@@ -941,7 +952,7 @@
         rowSat: 'Satisfaction data',
         rowAcquisition: 'Unrecovered acquisition capital',
         rowRevenueRisk: 'Revenue lost this year (switched-PM owners)',
-        rowRevenueProjected: 'Projected annual loss at this churn rate',
+        rowRevenueProjected: 'Total value lost over typical owner tenure',
         rowOccupancy: 'Occupancy vs. agreed',
         rowGuestFeedback: 'Guest feedback shared with owner',
         rowFinal: 'Final score',
@@ -962,7 +973,7 @@
         toastCopyFail: 'Copy failed, text shown below',
         summaryTitle: 'Owner Retention Diagnostic: summary',
         summaryScore: 'Score: {score} / 100 ({band})',
-        summaryRevenueImpact: 'Revenue already lost this year from owners who switched PM: {atRisk}. Projected annual loss if this churn rate continues: {projected}.',
+        summaryRevenueImpact: 'Revenue already lost this year from owners who switched PM: {atRisk}. Total value lost if measured over their typical tenure instead of one year: {projected}.',
         summaryInputs: 'Inputs',
         summaryToolUrl: 'https://rbisschoff.github.io/owner-retention-diagnostic/',
         summaryContact: 'Building that owner-retention visibility into how you operate is the work I do with operators. If you want to talk it through: rbisschoff@gmail.com',
@@ -1011,7 +1022,7 @@
         btnNo: 'No',
         resultLabel: 'Owner Retention Score',
         revenueImpactLabel: 'Ricavo Che Sta Già Uscendo dalla Porta',
-        revenueImpactSecondaryTpl: 'A questo ritmo di churn, proiettato a costare {amount} all\'anno andando avanti',
+        revenueImpactSecondaryTpl: 'Se quei proprietari fossero rimasti per la loro permanenza tipica, il valore totale perso si avvicina a {amount}',
         bandStable: 'Portafoglio stabile',
         bandRisk: 'Tasche a rischio',
         bandBleed: 'Perdite attive',
@@ -1022,6 +1033,8 @@
         flagBlockedText: 'Proprietari che bloccano più di un mese all\'anno riducono il potenziale di ricavo indipendentemente dal churn. Vale una conversazione diretta su quanto l\'accordo attuale funzioni ancora per loro.',
         flagSatTitle: 'Segnale di soddisfazione assente',
         flagSatText: 'Non stai raccogliendo alcun segnale diretto su come i proprietari si sentono davvero. Il silenzio non è soddisfazione, la maggior parte del churn resta invisibile finché il proprietario ha già deciso di andarsene.',
+        flagCadenceTitle: 'Cadenza di reporting debole',
+        flagCadenceText: 'I proprietari raramente se ne vanno per un mese fiacco. Se ne vanno quando si sentono fuori dal giro abbastanza a lungo da riempire il silenzio con la propria versione, di solito la peggiore. Un aggiornamento breve e fisso, sempre lo stesso giorno del mese, costa poco e chiude quel divario.',
         flagAcquisitionTitle: 'Capitale di acquisizione non recuperato',
         flagAcquisitionText: '{amount} in costi di acquisizione legati a proprietari che hanno cambiato PM quest\'anno ({count} proprietari), capitale probabilmente non recuperato prima che se ne andassero.',
         flagOccupancyTitle: 'Occupazione oltre l\'accordo',
@@ -1044,7 +1057,7 @@
         rowSat: 'Dati di soddisfazione',
         rowAcquisition: 'Capitale di acquisizione non recuperato',
         rowRevenueRisk: 'Ricavo perso quest\'anno (proprietari passati ad altro PM)',
-        rowRevenueProjected: 'Perdita annua proiettata a questo ritmo di churn',
+        rowRevenueProjected: 'Valore totale perso sulla permanenza tipica del proprietario',
         rowOccupancy: 'Occupazione vs. concordato',
         rowGuestFeedback: 'Feedback ospiti condiviso col proprietario',
         rowFinal: 'Punteggio finale',
@@ -1065,7 +1078,7 @@
         toastCopyFail: 'Copia non riuscita, testo qui sotto',
         summaryTitle: 'Owner Retention Diagnostic: riepilogo',
         summaryScore: 'Punteggio: {score} / 100 ({band})',
-        summaryRevenueImpact: 'Ricavo già perso quest\'anno da proprietari passati ad altro PM: {atRisk}. Perdita annua proiettata se questo ritmo di churn continua: {projected}.',
+        summaryRevenueImpact: 'Ricavo già perso quest\'anno da proprietari passati ad altro PM: {atRisk}. Valore totale perso se misurato sulla loro permanenza tipica invece che su un anno: {projected}.',
         summaryInputs: 'Input',
         summaryToolUrl: 'https://rbisschoff.github.io/owner-retention-diagnostic/',
         summaryContact: 'Costruire quella visibilità sulla retention dei proprietari nel modo in cui operi è il lavoro che faccio con gli operatori. Se vuoi parlarne: rbisschoff@gmail.com',
@@ -1114,7 +1127,7 @@
         btnNo: 'Nein',
         resultLabel: 'Owner Retention Score',
         revenueImpactLabel: 'Umsatz, der Bereits Zur Tür Hinausgeht',
-        revenueImpactSecondaryTpl: 'Bei dieser Churn-Rate voraussichtlich {amount} pro Jahr, wenn es so weitergeht',
+        revenueImpactSecondaryTpl: 'Wären diese Eigentümer für ihre typische Verweildauer geblieben, läge der Gesamtwertverlust näher bei {amount}',
         bandStable: 'Stabiles Buch',
         bandRisk: 'Risikotaschen',
         bandBleed: 'Aktiver Verlust',
@@ -1125,6 +1138,8 @@
         flagBlockedText: 'Eigentümer, die mehr als einen Monat im Jahr blockieren, senken Ihr Ertragspotenzial unabhängig vom Churn. Ein direktes Gespräch, ob die aktuelle Vereinbarung für sie noch passt, lohnt sich.',
         flagSatTitle: 'Fehlendes Zufriedenheitssignal',
         flagSatText: 'Sie erheben kein direktes Signal dazu, wie Eigentümer sich wirklich fühlen. Schweigen ist nicht Zufriedenheit, die meisten Churn-Fälle bleiben unsichtbar, bis der Eigentümer schon entschieden hat zu gehen.',
+        flagCadenceTitle: 'Schwacher Reporting-Rhythmus',
+        flagCadenceText: 'Eigentümer verlassen selten wegen eines einzigen schwachen Monats. Sie gehen, wenn sie sich lange genug außen vor fühlen, um die Stille mit ihrer eigenen Geschichte zu füllen, meist der schlechtesten. Ein kurzes, festes Update am selben Tag jeden Monat kostet wenig und schließt diese Lücke.',
         flagAcquisitionTitle: 'Nicht amortisiertes Akquisitionskapital',
         flagAcquisitionText: '{amount} an Akquisitionskosten gebunden an Eigentümer, die dieses Jahr den PM gewechselt haben ({count} Eigentümer), Kapital, das wahrscheinlich nicht amortisiert wurde, bevor sie gingen.',
         flagOccupancyTitle: 'Belegung über die Vereinbarung hinaus',
@@ -1147,7 +1162,7 @@
         rowSat: 'Zufriedenheitsdaten',
         rowAcquisition: 'Nicht amortisiertes Akquisitionskapital',
         rowRevenueRisk: 'Verlorener Umsatz dieses Jahr (zu anderem Verwalter gewechselte Eigentümer)',
-        rowRevenueProjected: 'Prognostizierter Jahresverlust bei dieser Churn-Rate',
+        rowRevenueProjected: 'Gesamtwertverlust über die typische Eigentümer-Verweildauer',
         rowOccupancy: 'Belegung vs. vereinbart',
         rowGuestFeedback: 'Gäste-Feedback mit Eigentümer geteilt',
         rowFinal: 'Endscore',
@@ -1168,7 +1183,7 @@
         toastCopyFail: 'Kopieren fehlgeschlagen, Text unten',
         summaryTitle: 'Owner Retention Diagnostic: Zusammenfassung',
         summaryScore: 'Score: {score} / 100 ({band})',
-        summaryRevenueImpact: 'Bereits verlorener Umsatz dieses Jahr durch Eigentümer, die den Verwalter gewechselt haben: {atRisk}. Prognostizierter Jahresverlust, wenn diese Churn-Rate anhält: {projected}.',
+        summaryRevenueImpact: 'Bereits verlorener Umsatz dieses Jahr durch Eigentümer, die den Verwalter gewechselt haben: {atRisk}. Gesamtwertverlust, gemessen über ihre typische Verweildauer statt über ein Jahr: {projected}.',
         summaryInputs: 'Eingaben',
         summaryToolUrl: 'https://rbisschoff.github.io/owner-retention-diagnostic/',
         summaryContact: 'Diese Eigentümer-Retention-Sichtbarkeit in Ihre Betriebsweise einzubauen, ist die Arbeit, die ich mit Operatoren mache. Wenn Sie darüber sprechen möchten: rbisschoff@gmail.com',
@@ -1275,8 +1290,9 @@
         occupancyOverage: Math.max(0, i.blockedDays - i.agreedBlockedDays),
         showOccupancyFlag: (i.blockedDays - i.agreedBlockedDays) > 5,
         showGuestFeedbackFlag: i.guestFeedback === 'no',
+        showCadenceFlag: (i.cadence === 'none' || i.cadence === 'annual'),
         revenueAtRiskThisYear: i.switchedPM * i.avgRevenue,
-        projectedAnnualLoss: (churnRate / 100) * i.totalOwners * i.avgRevenue
+        lifetimeValueLost: i.switchedPM * i.avgRevenue * i.avgTenure
       };
     }
 
@@ -1305,7 +1321,7 @@
 
       document.getElementById('revenueAtRiskValue').textContent = '€' + formatNum(result.revenueAtRiskThisYear, 0);
       document.getElementById('revenueImpactSecondary').textContent = tf('revenueImpactSecondaryTpl', {
-        amount: '€' + formatNum(result.projectedAnnualLoss, 0)
+        amount: '€' + formatNum(result.lifetimeValueLost, 0)
       });
 
       document.getElementById('verdictTitle').textContent = t(result.bandKey);
@@ -1313,6 +1329,7 @@
 
       document.getElementById('blockedCallout').style.display = result.showBlockedFlag ? '' : 'none';
       document.getElementById('satisfactionCallout').style.display = result.showSatFlag ? '' : 'none';
+      document.getElementById('cadenceCallout').style.display = result.showCadenceFlag ? '' : 'none';
 
       const i = result.inputs;
 
@@ -1331,7 +1348,7 @@
 
       document.getElementById('bd_acq_in').textContent = '€' + formatNum(result.unrecoveredAcquisition, 0);
       document.getElementById('bd_revenue_risk').textContent = '€' + formatNum(result.revenueAtRiskThisYear, 0);
-      document.getElementById('bd_revenue_projected').textContent = '€' + formatNum(result.projectedAnnualLoss, 0);
+      document.getElementById('bd_revenue_projected').textContent = '€' + formatNum(result.lifetimeValueLost, 0);
       document.getElementById('bd_occ_in').textContent = formatNum(i.blockedDays, 0) + ' / ' + formatNum(i.agreedBlockedDays, 0) + ' ' + t('suffixDays');
       document.getElementById('bd_occ_effect').textContent = result.showOccupancyFlag ? t('effectFlag') : t('effectOk');
       document.getElementById('bd_gf_in').textContent = i.guestFeedback === 'yes' ? t('btnYes') : t('btnNo');
@@ -1400,6 +1417,7 @@
       const flags = [];
       if (lastResult.showBlockedFlag) flags.push(t('flagBlockedText'));
       if (lastResult.showSatFlag) flags.push(t('flagSatText'));
+      if (lastResult.showCadenceFlag) flags.push(t('flagCadenceText'));
       if (lastResult.showAcquisitionFlag) flags.push(tf('flagAcquisitionText', { amount: '€' + formatNum(lastResult.unrecoveredAcquisition, 0), count: formatNum(i.switchedPM, 0) }));
       if (lastResult.showOccupancyFlag) flags.push(tf('flagOccupancyText', { days: formatNum(lastResult.occupancyOverage, 0) }));
       if (lastResult.showGuestFeedbackFlag) flags.push(t('flagGuestFeedbackText'));
@@ -1410,7 +1428,7 @@
         t(lastResult.verdictKey),
         tf('summaryRevenueImpact', {
           atRisk: '€' + formatNum(lastResult.revenueAtRiskThisYear, 0),
-          projected: '€' + formatNum(lastResult.projectedAnnualLoss, 0)
+          projected: '€' + formatNum(lastResult.lifetimeValueLost, 0)
         }),
         '',
         t('summaryInputs'),

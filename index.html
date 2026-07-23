@@ -548,6 +548,17 @@
         </div>
       </div>
 
+      <div class="input-group">
+        <label for="avgRevenue">
+          <span data-i18n="lblAvgRevenue">Average annual revenue per unit</span>
+          <span class="info-tip" tabindex="0" data-i18n-tip="tipAvgRevenue" data-tip="Used to estimate the revenue value of the units you have already lost, and what continued churn at this rate would cost going forward.">i</span>
+        </label>
+        <div class="input-wrapper">
+          <span class="input-prefix">€</span>
+          <input type="number" id="avgRevenue" value="18000" min="0" step="500" inputmode="numeric">
+        </div>
+      </div>
+
       <div class="section-label">
         <span class="section-label-accent"></span>
         <span data-i18n="secLost">Owners lost in the last 12 months</span>
@@ -664,6 +675,12 @@
         <div class="result-secondary" id="bandLabel">-</div>
       </div>
 
+      <div class="result-highlight" id="revenueImpactBox" style="background: linear-gradient(135deg, #5C6F82 0%, #45535F 100%);">
+        <div class="result-label" data-i18n="revenueImpactLabel">Revenue Already Walking Out the Door</div>
+        <div class="result-value" id="revenueAtRiskValue">-</div>
+        <div class="result-secondary" id="revenueImpactSecondary">-</div>
+      </div>
+
       <div class="insight-callout verdict" id="verdictCallout">
         <div class="insight-callout-title" id="verdictTitle"></div>
         <div id="verdictText"></div>
@@ -756,6 +773,16 @@
                 <td class="numeric" data-i18n="rowContextOnly">Context only</td>
               </tr>
               <tr>
+                <td data-i18n="rowRevenueRisk">Revenue lost this year (switched-PM owners)</td>
+                <td class="numeric" id="bd_revenue_risk">-</td>
+                <td class="numeric" data-i18n="rowContextOnly">Context only</td>
+              </tr>
+              <tr>
+                <td data-i18n="rowRevenueProjected">Projected annual loss at this churn rate</td>
+                <td class="numeric" id="bd_revenue_projected">-</td>
+                <td class="numeric" data-i18n="rowContextOnly">Context only</td>
+              </tr>
+              <tr>
                 <td data-i18n="rowOccupancy">Occupancy vs. agreed</td>
                 <td class="numeric" id="bd_occ_in">-</td>
                 <td class="numeric" id="bd_occ_effect">-</td>
@@ -828,6 +855,7 @@
       avgTenure: 2.5,
       revenueGap: 8,
       acquisitionCost: 250,
+      avgRevenue: 18000,
       agreedBlockedDays: 21,
       blockedDays: 35,
       cadence: 'annual',
@@ -861,6 +889,8 @@
         tipRevenueGap: 'Usually the sharpest driver of owner churn. How far actual delivered revenue sits below what was promised when they signed.',
         lblAcquisitionCost: 'Average cost to acquire a new owner',
         tipAcquisitionCost: 'Marketing, onboarding, photography, listing setup. Used to show unrecovered capital when an owner switches PM early.',
+        lblAvgRevenue: 'Average annual revenue per unit',
+        tipAvgRevenue: 'Used to estimate the revenue value of the units you have already lost, and what continued churn at this rate would cost going forward.',
         lblAgreedBlocked: 'Owner-blocked days agreed per contract',
         tipAgreedBlocked: 'What was actually agreed in the management contract, before any personal-use days beyond it.',
         lblBlocked: 'Owner-blocked days actually used',
@@ -877,6 +907,8 @@
         btnYes: 'Yes',
         btnNo: 'No',
         resultLabel: 'Owner Retention Score',
+        revenueImpactLabel: 'Revenue Already Walking Out the Door',
+        revenueImpactSecondaryTpl: 'At this churn rate, projected to cost {amount} a year going forward',
         bandStable: 'Stable book',
         bandRisk: 'At-risk pockets',
         bandBleed: 'Active bleed',
@@ -908,6 +940,8 @@
         rowBlocked: 'Owner-blocked days',
         rowSat: 'Satisfaction data',
         rowAcquisition: 'Unrecovered acquisition capital',
+        rowRevenueRisk: 'Revenue lost this year (switched-PM owners)',
+        rowRevenueProjected: 'Projected annual loss at this churn rate',
         rowOccupancy: 'Occupancy vs. agreed',
         rowGuestFeedback: 'Guest feedback shared with owner',
         rowFinal: 'Final score',
@@ -928,6 +962,7 @@
         toastCopyFail: 'Copy failed, text shown below',
         summaryTitle: 'Owner Retention Diagnostic: summary',
         summaryScore: 'Score: {score} / 100 ({band})',
+        summaryRevenueImpact: 'Revenue already lost this year from owners who switched PM: {atRisk}. Projected annual loss if this churn rate continues: {projected}.',
         summaryInputs: 'Inputs',
         summaryToolUrl: 'https://rbisschoff.github.io/owner-retention-diagnostic/',
         summaryContact: 'Building that owner-retention visibility into how you operate is the work I do with operators. If you want to talk it through: rbisschoff@gmail.com',
@@ -957,6 +992,8 @@
         tipRevenueGap: 'Di solito il driver più netto del churn. Quanto il ricavo effettivamente consegnato resta sotto quanto promesso alla firma.',
         lblAcquisitionCost: 'Costo medio per acquisire un nuovo proprietario',
         tipAcquisitionCost: 'Marketing, onboarding, fotografia, setup annuncio. Usato per mostrare il capitale non recuperato quando un proprietario cambia PM in anticipo.',
+        lblAvgRevenue: 'Ricavo medio annuo per unità',
+        tipAvgRevenue: 'Usato per stimare il valore in ricavo delle unità già perse, e quanto costerebbe il churn continuato a questo ritmo.',
         lblAgreedBlocked: 'Giorni bloccati dal proprietario concordati da contratto',
         tipAgreedBlocked: 'Quanto effettivamente concordato nel contratto di gestione, prima di eventuali giorni di uso personale oltre l\'accordo.',
         lblBlocked: 'Giorni bloccati dal proprietario effettivamente usati',
@@ -973,6 +1010,8 @@
         btnYes: 'Sì',
         btnNo: 'No',
         resultLabel: 'Owner Retention Score',
+        revenueImpactLabel: 'Ricavo Che Sta Già Uscendo dalla Porta',
+        revenueImpactSecondaryTpl: 'A questo ritmo di churn, proiettato a costare {amount} all\'anno andando avanti',
         bandStable: 'Portafoglio stabile',
         bandRisk: 'Tasche a rischio',
         bandBleed: 'Perdite attive',
@@ -1004,6 +1043,8 @@
         rowBlocked: 'Giorni bloccati dal proprietario',
         rowSat: 'Dati di soddisfazione',
         rowAcquisition: 'Capitale di acquisizione non recuperato',
+        rowRevenueRisk: 'Ricavo perso quest\'anno (proprietari passati ad altro PM)',
+        rowRevenueProjected: 'Perdita annua proiettata a questo ritmo di churn',
         rowOccupancy: 'Occupazione vs. concordato',
         rowGuestFeedback: 'Feedback ospiti condiviso col proprietario',
         rowFinal: 'Punteggio finale',
@@ -1024,6 +1065,7 @@
         toastCopyFail: 'Copia non riuscita, testo qui sotto',
         summaryTitle: 'Owner Retention Diagnostic: riepilogo',
         summaryScore: 'Punteggio: {score} / 100 ({band})',
+        summaryRevenueImpact: 'Ricavo già perso quest\'anno da proprietari passati ad altro PM: {atRisk}. Perdita annua proiettata se questo ritmo di churn continua: {projected}.',
         summaryInputs: 'Input',
         summaryToolUrl: 'https://rbisschoff.github.io/owner-retention-diagnostic/',
         summaryContact: 'Costruire quella visibilità sulla retention dei proprietari nel modo in cui operi è il lavoro che faccio con gli operatori. Se vuoi parlarne: rbisschoff@gmail.com',
@@ -1053,6 +1095,8 @@
         tipRevenueGap: 'Meist der schärfste Treiber von Eigentümer-Churn. Wie weit der tatsächlich gelieferte Umsatz unter dem Versprechen bei der Unterschrift liegt.',
         lblAcquisitionCost: 'Durchschnittliche Kosten zur Gewinnung eines neuen Eigentümers',
         tipAcquisitionCost: 'Marketing, Onboarding, Fotografie, Angebots-Setup. Zeigt das nicht amortisierte Kapital, wenn ein Eigentümer frühzeitig den PM wechselt.',
+        lblAvgRevenue: 'Durchschnittlicher Jahresumsatz pro Unit',
+        tipAvgRevenue: 'Wird verwendet, um den Umsatzwert der bereits verlorenen Units zu schätzen, und was anhaltender Churn zu dieser Rate künftig kosten würde.',
         lblAgreedBlocked: 'Vertraglich vereinbarte Eigentümer-gesperrte Tage',
         tipAgreedBlocked: 'Was tatsächlich im Verwaltungsvertrag vereinbart wurde, vor jeglichen Eigennutzungstagen darüber hinaus.',
         lblBlocked: 'Tatsächlich genutzte Eigentümer-gesperrte Tage',
@@ -1069,6 +1113,8 @@
         btnYes: 'Ja',
         btnNo: 'Nein',
         resultLabel: 'Owner Retention Score',
+        revenueImpactLabel: 'Umsatz, der Bereits Zur Tür Hinausgeht',
+        revenueImpactSecondaryTpl: 'Bei dieser Churn-Rate voraussichtlich {amount} pro Jahr, wenn es so weitergeht',
         bandStable: 'Stabiles Buch',
         bandRisk: 'Risikotaschen',
         bandBleed: 'Aktiver Verlust',
@@ -1100,6 +1146,8 @@
         rowBlocked: 'Eigentümer-gesperrte Tage',
         rowSat: 'Zufriedenheitsdaten',
         rowAcquisition: 'Nicht amortisiertes Akquisitionskapital',
+        rowRevenueRisk: 'Verlorener Umsatz dieses Jahr (zu anderem Verwalter gewechselte Eigentümer)',
+        rowRevenueProjected: 'Prognostizierter Jahresverlust bei dieser Churn-Rate',
         rowOccupancy: 'Belegung vs. vereinbart',
         rowGuestFeedback: 'Gäste-Feedback mit Eigentümer geteilt',
         rowFinal: 'Endscore',
@@ -1120,6 +1168,7 @@
         toastCopyFail: 'Kopieren fehlgeschlagen, Text unten',
         summaryTitle: 'Owner Retention Diagnostic: Zusammenfassung',
         summaryScore: 'Score: {score} / 100 ({band})',
+        summaryRevenueImpact: 'Bereits verlorener Umsatz dieses Jahr durch Eigentümer, die den Verwalter gewechselt haben: {atRisk}. Prognostizierter Jahresverlust, wenn diese Churn-Rate anhält: {projected}.',
         summaryInputs: 'Eingaben',
         summaryToolUrl: 'https://rbisschoff.github.io/owner-retention-diagnostic/',
         summaryContact: 'Diese Eigentümer-Retention-Sichtbarkeit in Ihre Betriebsweise einzubauen, ist die Arbeit, die ich mit Operatoren mache. Wenn Sie darüber sprechen möchten: rbisschoff@gmail.com',
@@ -1178,6 +1227,7 @@
         avgTenure: Math.max(0, parseFloat(document.getElementById('avgTenure').value) || 0),
         revenueGap: clamp(parseFloat(document.getElementById('revenueGap').value) || 0, 0, 100),
         acquisitionCost: Math.max(0, parseFloat(document.getElementById('acquisitionCost').value) || 0),
+        avgRevenue: Math.max(0, parseFloat(document.getElementById('avgRevenue').value) || 0),
         agreedBlockedDays: Math.max(0, parseFloat(document.getElementById('agreedBlockedDays').value) || 0),
         blockedDays: Math.max(0, parseFloat(document.getElementById('blockedDays').value) || 0),
         cadence: reportingCadence,
@@ -1224,7 +1274,9 @@
         showAcquisitionFlag: (i.acquisitionCost * i.switchedPM) > 0,
         occupancyOverage: Math.max(0, i.blockedDays - i.agreedBlockedDays),
         showOccupancyFlag: (i.blockedDays - i.agreedBlockedDays) > 5,
-        showGuestFeedbackFlag: i.guestFeedback === 'no'
+        showGuestFeedbackFlag: i.guestFeedback === 'no',
+        revenueAtRiskThisYear: i.switchedPM * i.avgRevenue,
+        projectedAnnualLoss: (churnRate / 100) * i.totalOwners * i.avgRevenue
       };
     }
 
@@ -1251,6 +1303,11 @@
       document.getElementById('scoreValue').textContent = String(result.finalScore);
       document.getElementById('bandLabel').textContent = t(result.bandKey);
 
+      document.getElementById('revenueAtRiskValue').textContent = '€' + formatNum(result.revenueAtRiskThisYear, 0);
+      document.getElementById('revenueImpactSecondary').textContent = tf('revenueImpactSecondaryTpl', {
+        amount: '€' + formatNum(result.projectedAnnualLoss, 0)
+      });
+
       document.getElementById('verdictTitle').textContent = t(result.bandKey);
       document.getElementById('verdictText').textContent = t(result.verdictKey);
 
@@ -1273,6 +1330,8 @@
       document.getElementById('guestFeedbackCallout').style.display = result.showGuestFeedbackFlag ? '' : 'none';
 
       document.getElementById('bd_acq_in').textContent = '€' + formatNum(result.unrecoveredAcquisition, 0);
+      document.getElementById('bd_revenue_risk').textContent = '€' + formatNum(result.revenueAtRiskThisYear, 0);
+      document.getElementById('bd_revenue_projected').textContent = '€' + formatNum(result.projectedAnnualLoss, 0);
       document.getElementById('bd_occ_in').textContent = formatNum(i.blockedDays, 0) + ' / ' + formatNum(i.agreedBlockedDays, 0) + ' ' + t('suffixDays');
       document.getElementById('bd_occ_effect').textContent = result.showOccupancyFlag ? t('effectFlag') : t('effectOk');
       document.getElementById('bd_gf_in').textContent = i.guestFeedback === 'yes' ? t('btnYes') : t('btnNo');
@@ -1319,6 +1378,7 @@
       document.getElementById('avgTenure').value = DEFAULTS.avgTenure;
       document.getElementById('revenueGap').value = DEFAULTS.revenueGap;
       document.getElementById('acquisitionCost').value = DEFAULTS.acquisitionCost;
+      document.getElementById('avgRevenue').value = DEFAULTS.avgRevenue;
       document.getElementById('agreedBlockedDays').value = DEFAULTS.agreedBlockedDays;
       document.getElementById('blockedDays').value = DEFAULTS.blockedDays;
       setCadence(DEFAULTS.cadence);
@@ -1348,6 +1408,10 @@
         '',
         tf('summaryScore', { score: lastResult.finalScore, band: t(lastResult.bandKey) }),
         t(lastResult.verdictKey),
+        tf('summaryRevenueImpact', {
+          atRisk: '€' + formatNum(lastResult.revenueAtRiskThisYear, 0),
+          projected: '€' + formatNum(lastResult.projectedAnnualLoss, 0)
+        }),
         '',
         t('summaryInputs'),
         t('lblTotalOwners') + ': ' + formatNum(i.totalOwners, 0),
@@ -1358,6 +1422,7 @@
         t('lblTenure') + ': ' + formatNum(i.avgTenure, 1) + ' ' + t('suffixYears'),
         t('lblRevenueGap') + ': ' + formatNum(i.revenueGap, 0) + '%',
         t('lblAcquisitionCost') + ': €' + formatNum(i.acquisitionCost, 0),
+        t('lblAvgRevenue') + ': €' + formatNum(i.avgRevenue, 0),
         t('lblAgreedBlocked') + ': ' + formatNum(i.agreedBlockedDays, 0),
         t('lblBlocked') + ': ' + formatNum(i.blockedDays, 0),
         t('lblCadence') + ': ' + cadenceLabel(i.cadence),

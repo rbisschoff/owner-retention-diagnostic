@@ -333,6 +333,12 @@
     .insight-callout.flag-satisfaction {
       border-left-color: var(--warning); background: rgba(255, 149, 0, 0.1);
     }
+    .insight-callout.flag-occupancy {
+      border-left-color: var(--warning); background: rgba(255, 149, 0, 0.1);
+    }
+    .insight-callout.flag-guestfeedback {
+      border-left-color: var(--warning); background: rgba(255, 149, 0, 0.1);
+    }
     .insight-callout.closing {
       border-left-color: var(--accent); background: var(--accent-light);
       margin-bottom: var(--section-gap);
@@ -343,6 +349,8 @@
     }
     .insight-callout.verdict .insight-callout-title { color: var(--warning); }
     .insight-callout.flag-satisfaction .insight-callout-title { color: var(--warning); }
+    .insight-callout.flag-occupancy .insight-callout-title { color: var(--warning); }
+    .insight-callout.flag-guestfeedback .insight-callout-title { color: var(--warning); }
 
     .breakdown-section {
       background: white; border-radius: var(--radius-lg); padding: 28px;
@@ -529,6 +537,17 @@
         </div>
       </div>
 
+      <div class="input-group">
+        <label for="acquisitionCost">
+          <span data-i18n="lblAcquisitionCost">Average cost to acquire a new owner</span>
+          <span class="info-tip" tabindex="0" data-i18n-tip="tipAcquisitionCost" data-tip="Marketing, onboarding, photography, listing setup. Used to show unrecovered capital when an owner switches PM early.">i</span>
+        </label>
+        <div class="input-wrapper">
+          <span class="input-prefix">€</span>
+          <input type="number" id="acquisitionCost" value="250" min="0" step="10" inputmode="numeric">
+        </div>
+      </div>
+
       <div class="section-label">
         <span class="section-label-accent"></span>
         <span data-i18n="secLost">Owners lost in the last 12 months</span>
@@ -583,14 +602,26 @@
         </div>
       </div>
 
-      <div class="input-group">
-        <label for="blockedDays">
-          <span data-i18n="lblBlocked">Owner-blocked days per year</span>
-          <span class="info-tip" tabindex="0" data-i18n-tip="tipBlocked" data-tip="Days the owner reserves the unit for themselves. This reduces earning potential but is a different risk than churn itself.">i</span>
-        </label>
-        <div class="input-wrapper">
-          <input type="number" id="blockedDays" value="35" min="0" step="1" class="with-suffix" inputmode="numeric">
-          <span class="input-suffix" data-i18n="suffixDays">days</span>
+      <div class="input-group-row">
+        <div class="input-group">
+          <label for="agreedBlockedDays">
+            <span data-i18n="lblAgreedBlocked">Owner-blocked days agreed per contract</span>
+            <span class="info-tip" tabindex="0" data-i18n-tip="tipAgreedBlocked" data-tip="What was actually agreed in the management contract, before any personal-use days beyond it.">i</span>
+          </label>
+          <div class="input-wrapper">
+            <input type="number" id="agreedBlockedDays" value="21" min="0" step="1" class="with-suffix" inputmode="numeric">
+            <span class="input-suffix" data-i18n="suffixDays">days</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="blockedDays">
+            <span data-i18n="lblBlocked">Owner-blocked days actually used</span>
+            <span class="info-tip" tabindex="0" data-i18n-tip="tipBlocked" data-tip="Days the owner actually reserved the unit for themselves. This reduces earning potential but is a different risk than churn itself.">i</span>
+          </label>
+          <div class="input-wrapper">
+            <input type="number" id="blockedDays" value="35" min="0" step="1" class="with-suffix" inputmode="numeric">
+            <span class="input-suffix" data-i18n="suffixDays">days</span>
+          </div>
         </div>
       </div>
 
@@ -611,6 +642,17 @@
         <div class="yesno-toggle" role="group" aria-labelledby="satisfactionLabel">
           <button type="button" class="yesno-btn" id="satYes" onclick="setSatisfaction('yes')" data-i18n="btnYes">Yes</button>
           <button type="button" class="yesno-btn active" id="satNo" onclick="setSatisfaction('no')" data-i18n="btnNo">No</button>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label id="guestFeedbackLabel">
+          <span data-i18n="lblGuestFeedback">Do you share guest satisfaction / review feedback about their specific property with the owner?</span>
+          <span class="info-tip" tabindex="0" data-i18n-tip="tipGuestFeedback" data-tip="Different from owner satisfaction with you. This is whether the owner ever hears how guests actually experienced their unit.">i</span>
+        </label>
+        <div class="yesno-toggle" role="group" aria-labelledby="guestFeedbackLabel">
+          <button type="button" class="yesno-btn" id="gfYes" onclick="setGuestFeedback('yes')" data-i18n="btnYes">Yes</button>
+          <button type="button" class="yesno-btn active" id="gfNo" onclick="setGuestFeedback('no')" data-i18n="btnNo">No</button>
         </div>
       </div>
     </div>
@@ -635,6 +677,21 @@
       <div class="insight-callout flag-satisfaction" id="satisfactionCallout" style="display:none;">
         <div class="insight-callout-title" data-i18n="flagSatTitle">Missing satisfaction signal</div>
         <div data-i18n="flagSatText">You are not collecting any direct signal on how owners actually feel. Silence is not the same as satisfaction, most churn is invisible until the owner has already decided to leave.</div>
+      </div>
+
+      <div class="insight-callout flag-acquisition" id="acquisitionCallout" style="display:none;">
+        <div class="insight-callout-title" data-i18n="flagAcquisitionTitle">Unrecovered acquisition capital</div>
+        <div id="acquisitionCalloutText"></div>
+      </div>
+
+      <div class="insight-callout flag-occupancy" id="occupancyCallout" style="display:none;">
+        <div class="insight-callout-title" data-i18n="flagOccupancyTitle">Occupancy beyond agreement</div>
+        <div id="occupancyCalloutText"></div>
+      </div>
+
+      <div class="insight-callout flag-guestfeedback" id="guestFeedbackCallout" style="display:none;">
+        <div class="insight-callout-title" data-i18n="flagGuestFeedbackTitle">Owner not informed on guest experience</div>
+        <div data-i18n="flagGuestFeedbackText">The owner never hears how guests actually rated or experienced their property. That is a missed signal, and a missed reason to justify why revenue is soft or strong.</div>
       </div>
 
       <div class="insight-callout closing" id="closingCallout">
@@ -693,6 +750,21 @@
                 <td class="numeric" id="bd_sat_in">-</td>
                 <td class="numeric" id="bd_sat_effect">-</td>
               </tr>
+              <tr>
+                <td data-i18n="rowAcquisition">Unrecovered acquisition capital</td>
+                <td class="numeric" id="bd_acq_in">-</td>
+                <td class="numeric" data-i18n="rowContextOnly">Context only</td>
+              </tr>
+              <tr>
+                <td data-i18n="rowOccupancy">Occupancy vs. agreed</td>
+                <td class="numeric" id="bd_occ_in">-</td>
+                <td class="numeric" id="bd_occ_effect">-</td>
+              </tr>
+              <tr>
+                <td data-i18n="rowGuestFeedback">Guest feedback shared with owner</td>
+                <td class="numeric" id="bd_gf_in">-</td>
+                <td class="numeric" id="bd_gf_effect">-</td>
+              </tr>
               <tr class="margin-row">
                 <td data-i18n="rowFinal">Final score</td>
                 <td class="numeric">-</td>
@@ -743,6 +815,7 @@
     let currentLang = 'en';
     let reportingCadence = 'annual';
     let satisfactionData = 'no';
+    let guestFeedbackData = 'no';
     let lastResult = null;
     let completionTracked = false;
 
@@ -754,9 +827,12 @@
       ownersGained: 3,
       avgTenure: 2.5,
       revenueGap: 8,
+      acquisitionCost: 250,
+      agreedBlockedDays: 21,
       blockedDays: 35,
       cadence: 'annual',
-      satisfaction: 'no'
+      satisfaction: 'no',
+      guestFeedback: 'no'
     };
 
     const CADENCE_MOD = { none: -8, annual: -4, quarterly: 0, monthly: 4 };
@@ -783,9 +859,15 @@
         suffixYears: 'years',
         lblRevenueGap: 'Revenue gap vs. what you promised at signing',
         tipRevenueGap: 'Usually the sharpest driver of owner churn. How far actual delivered revenue sits below what was promised when they signed.',
-        lblBlocked: 'Owner-blocked days per year',
-        tipBlocked: 'Days the owner reserves the unit for themselves. This reduces earning potential but is a different risk than churn itself.',
+        lblAcquisitionCost: 'Average cost to acquire a new owner',
+        tipAcquisitionCost: 'Marketing, onboarding, photography, listing setup. Used to show unrecovered capital when an owner switches PM early.',
+        lblAgreedBlocked: 'Owner-blocked days agreed per contract',
+        tipAgreedBlocked: 'What was actually agreed in the management contract, before any personal-use days beyond it.',
+        lblBlocked: 'Owner-blocked days actually used',
+        tipBlocked: 'Days the owner actually reserved the unit for themselves. This reduces earning potential but is a different risk than churn itself.',
         suffixDays: 'days',
+        lblGuestFeedback: 'Do you share guest satisfaction / review feedback about their specific property with the owner?',
+        tipGuestFeedback: 'Different from owner satisfaction with you. This is whether the owner ever hears how guests actually experienced their unit.',
         lblCadence: 'Reporting cadence',
         cadenceNone: 'None',
         cadenceAnnual: 'Annual',
@@ -805,6 +887,12 @@
         flagBlockedText: 'Owners blocking more than a month a year reduces your earning potential independently of churn. Worth a direct conversation about whether the current arrangement still works for them.',
         flagSatTitle: 'Missing satisfaction signal',
         flagSatText: 'You are not collecting any direct signal on how owners actually feel. Silence is not the same as satisfaction, most churn is invisible until the owner has already decided to leave.',
+        flagAcquisitionTitle: 'Unrecovered acquisition capital',
+        flagAcquisitionText: '{amount} in acquisition cost tied to owners who switched PM this year ({count} owner(s)), capital that likely was not recouped before they left.',
+        flagOccupancyTitle: 'Occupancy beyond agreement',
+        flagOccupancyText: 'Owners are using {days} more days than agreed in the contract. Worth clarifying the arrangement directly rather than letting it drift.',
+        flagGuestFeedbackTitle: 'Owner not informed on guest experience',
+        flagGuestFeedbackText: 'The owner never hears how guests actually rated or experienced their property. That is a missed signal, and a missed reason to justify why revenue is soft or strong.',
         closingTitle: 'Persuasion angle',
         closingText: 'Recurring owner complaints are not just a retention risk. They are also the clearest, most credible case you can make to an owner for investing in their own property, real feedback carries more weight than a generic upgrade pitch.',
         breakdownTitle: 'Score breakdown',
@@ -819,6 +907,9 @@
         rowTenure: 'Average tenure',
         rowBlocked: 'Owner-blocked days',
         rowSat: 'Satisfaction data',
+        rowAcquisition: 'Unrecovered acquisition capital',
+        rowOccupancy: 'Occupancy vs. agreed',
+        rowGuestFeedback: 'Guest feedback shared with owner',
         rowFinal: 'Final score',
         rowContextOnly: 'Context only',
         effectFlag: 'Flag only',
@@ -864,9 +955,15 @@
         suffixYears: 'anni',
         lblRevenueGap: 'Gap di ricavo rispetto a quanto promesso alla firma',
         tipRevenueGap: 'Di solito il driver più netto del churn. Quanto il ricavo effettivamente consegnato resta sotto quanto promesso alla firma.',
-        lblBlocked: 'Giorni bloccati dal proprietario all\'anno',
-        tipBlocked: 'Giorni in cui il proprietario tiene l\'unità per sé. Riduce il potenziale di ricavo ma è un rischio diverso dal churn.',
+        lblAcquisitionCost: 'Costo medio per acquisire un nuovo proprietario',
+        tipAcquisitionCost: 'Marketing, onboarding, fotografia, setup annuncio. Usato per mostrare il capitale non recuperato quando un proprietario cambia PM in anticipo.',
+        lblAgreedBlocked: 'Giorni bloccati dal proprietario concordati da contratto',
+        tipAgreedBlocked: 'Quanto effettivamente concordato nel contratto di gestione, prima di eventuali giorni di uso personale oltre l\'accordo.',
+        lblBlocked: 'Giorni bloccati dal proprietario effettivamente usati',
+        tipBlocked: 'Giorni in cui il proprietario ha effettivamente tenuto l\'unità per sé. Riduce il potenziale di ricavo ma è un rischio diverso dal churn.',
         suffixDays: 'giorni',
+        lblGuestFeedback: 'Condividi con il proprietario il feedback di soddisfazione/recensioni degli ospiti sulla sua specifica proprietà?',
+        tipGuestFeedback: 'Diverso dalla soddisfazione del proprietario verso di te. Qui si tratta di sapere se il proprietario viene mai a conoscenza di come gli ospiti hanno vissuto la sua unità.',
         lblCadence: 'Cadenza di reporting',
         cadenceNone: 'Nessuna',
         cadenceAnnual: 'Annuale',
@@ -886,6 +983,12 @@
         flagBlockedText: 'Proprietari che bloccano più di un mese all\'anno riducono il potenziale di ricavo indipendentemente dal churn. Vale una conversazione diretta su quanto l\'accordo attuale funzioni ancora per loro.',
         flagSatTitle: 'Segnale di soddisfazione assente',
         flagSatText: 'Non stai raccogliendo alcun segnale diretto su come i proprietari si sentono davvero. Il silenzio non è soddisfazione, la maggior parte del churn resta invisibile finché il proprietario ha già deciso di andarsene.',
+        flagAcquisitionTitle: 'Capitale di acquisizione non recuperato',
+        flagAcquisitionText: '{amount} in costi di acquisizione legati a proprietari che hanno cambiato PM quest\'anno ({count} proprietari), capitale probabilmente non recuperato prima che se ne andassero.',
+        flagOccupancyTitle: 'Occupazione oltre l\'accordo',
+        flagOccupancyText: 'I proprietari stanno usando {days} giorni in più rispetto a quanto concordato nel contratto. Vale la pena chiarire direttamente l\'accordo invece di lasciarlo scivolare.',
+        flagGuestFeedbackTitle: 'Proprietario non informato sull\'esperienza degli ospiti',
+        flagGuestFeedbackText: 'Il proprietario non viene mai a sapere come gli ospiti hanno valutato o vissuto la sua proprietà. È un segnale mancato, e una motivazione mancata per spiegare perché il ricavo è debole o forte.',
         closingTitle: 'Angolo di persuasione',
         closingText: 'I reclami ricorrenti dei proprietari non sono solo un rischio di retention. Sono anche il caso più chiaro e credibile che puoi fare a un proprietario per investire nella propria proprietà: un feedback reale pesa più di un pitch generico di upgrade.',
         breakdownTitle: 'Dettaglio del punteggio',
@@ -900,6 +1003,9 @@
         rowTenure: 'Anzianità media',
         rowBlocked: 'Giorni bloccati dal proprietario',
         rowSat: 'Dati di soddisfazione',
+        rowAcquisition: 'Capitale di acquisizione non recuperato',
+        rowOccupancy: 'Occupazione vs. concordato',
+        rowGuestFeedback: 'Feedback ospiti condiviso col proprietario',
         rowFinal: 'Punteggio finale',
         rowContextOnly: 'Solo contesto',
         effectFlag: 'Solo flag',
@@ -945,9 +1051,15 @@
         suffixYears: 'Jahre',
         lblRevenueGap: 'Umsatzlücke gegenüber dem Versprechen bei Vertragsabschluss',
         tipRevenueGap: 'Meist der schärfste Treiber von Eigentümer-Churn. Wie weit der tatsächlich gelieferte Umsatz unter dem Versprechen bei der Unterschrift liegt.',
-        lblBlocked: 'Eigentümer-gesperrte Tage pro Jahr',
-        tipBlocked: 'Tage, an denen der Eigentümer die Unit für sich selbst blockiert. Das senkt das Ertragspotenzial, ist aber ein anderes Risiko als Churn.',
+        lblAcquisitionCost: 'Durchschnittliche Kosten zur Gewinnung eines neuen Eigentümers',
+        tipAcquisitionCost: 'Marketing, Onboarding, Fotografie, Angebots-Setup. Zeigt das nicht amortisierte Kapital, wenn ein Eigentümer frühzeitig den PM wechselt.',
+        lblAgreedBlocked: 'Vertraglich vereinbarte Eigentümer-gesperrte Tage',
+        tipAgreedBlocked: 'Was tatsächlich im Verwaltungsvertrag vereinbart wurde, vor jeglichen Eigennutzungstagen darüber hinaus.',
+        lblBlocked: 'Tatsächlich genutzte Eigentümer-gesperrte Tage',
+        tipBlocked: 'Tage, an denen der Eigentümer die Unit tatsächlich für sich selbst reserviert hat. Das senkt das Ertragspotenzial, ist aber ein anderes Risiko als Churn.',
         suffixDays: 'Tage',
+        lblGuestFeedback: 'Teilen Sie Gäste-Zufriedenheits-/Bewertungs-Feedback zur jeweiligen Immobilie mit dem Eigentümer?',
+        tipGuestFeedback: 'Anders als Eigentümer-Zufriedenheit mit Ihnen. Hier geht es darum, ob der Eigentümer je erfährt, wie Gäste seine Unit tatsächlich erlebt haben.',
         lblCadence: 'Reporting-Rhythmus',
         cadenceNone: 'Keiner',
         cadenceAnnual: 'Jährlich',
@@ -967,6 +1079,12 @@
         flagBlockedText: 'Eigentümer, die mehr als einen Monat im Jahr blockieren, senken Ihr Ertragspotenzial unabhängig vom Churn. Ein direktes Gespräch, ob die aktuelle Vereinbarung für sie noch passt, lohnt sich.',
         flagSatTitle: 'Fehlendes Zufriedenheitssignal',
         flagSatText: 'Sie erheben kein direktes Signal dazu, wie Eigentümer sich wirklich fühlen. Schweigen ist nicht Zufriedenheit, die meisten Churn-Fälle bleiben unsichtbar, bis der Eigentümer schon entschieden hat zu gehen.',
+        flagAcquisitionTitle: 'Nicht amortisiertes Akquisitionskapital',
+        flagAcquisitionText: '{amount} an Akquisitionskosten gebunden an Eigentümer, die dieses Jahr den PM gewechselt haben ({count} Eigentümer), Kapital, das wahrscheinlich nicht amortisiert wurde, bevor sie gingen.',
+        flagOccupancyTitle: 'Belegung über die Vereinbarung hinaus',
+        flagOccupancyText: 'Eigentümer nutzen {days} Tage mehr als vertraglich vereinbart. Es lohnt sich, die Vereinbarung direkt zu klären, statt sie schleifen zu lassen.',
+        flagGuestFeedbackTitle: 'Eigentümer nicht über Gästeerfahrung informiert',
+        flagGuestFeedbackText: 'Der Eigentümer erfährt nie, wie Gäste seine Immobilie tatsächlich bewertet oder erlebt haben. Das ist ein verpasstes Signal und eine verpasste Begründung dafür, warum der Umsatz schwach oder stark ist.',
         closingTitle: 'Überzeugungshebel',
         closingText: 'Wiederkehrende Eigentümerbeschwerden sind nicht nur ein Retention-Risiko. Sie sind auch der klarste, glaubwürdigste Fall, den Sie einem Eigentümer machen können, in die eigene Immobilie zu investieren: echtes Feedback wiegt schwerer als ein generischer Upgrade-Pitch.',
         breakdownTitle: 'Score-Aufschlüsselung',
@@ -981,6 +1099,9 @@
         rowTenure: 'Durchschnittliche Dauer',
         rowBlocked: 'Eigentümer-gesperrte Tage',
         rowSat: 'Zufriedenheitsdaten',
+        rowAcquisition: 'Nicht amortisiertes Akquisitionskapital',
+        rowOccupancy: 'Belegung vs. vereinbart',
+        rowGuestFeedback: 'Gäste-Feedback mit Eigentümer geteilt',
         rowFinal: 'Endscore',
         rowContextOnly: 'Nur Kontext',
         effectFlag: 'Nur Flag',
@@ -1040,6 +1161,13 @@
       runScore();
     }
 
+    function setGuestFeedback(value) {
+      guestFeedbackData = value === 'yes' ? 'yes' : 'no';
+      document.getElementById('gfYes').classList.toggle('active', guestFeedbackData === 'yes');
+      document.getElementById('gfNo').classList.toggle('active', guestFeedbackData === 'no');
+      runScore();
+    }
+
     function getInputs() {
       return {
         totalOwners: Math.max(1, parseFloat(document.getElementById('totalOwners').value) || 1),
@@ -1049,9 +1177,12 @@
         ownersGained: Math.max(0, parseFloat(document.getElementById('ownersGained').value) || 0),
         avgTenure: Math.max(0, parseFloat(document.getElementById('avgTenure').value) || 0),
         revenueGap: clamp(parseFloat(document.getElementById('revenueGap').value) || 0, 0, 100),
+        acquisitionCost: Math.max(0, parseFloat(document.getElementById('acquisitionCost').value) || 0),
+        agreedBlockedDays: Math.max(0, parseFloat(document.getElementById('agreedBlockedDays').value) || 0),
         blockedDays: Math.max(0, parseFloat(document.getElementById('blockedDays').value) || 0),
         cadence: reportingCadence,
-        satisfaction: satisfactionData
+        satisfaction: satisfactionData,
+        guestFeedback: guestFeedbackData
       };
     }
 
@@ -1088,7 +1219,12 @@
         bandClass: bandClass,
         verdictKey: verdictKey,
         showBlockedFlag: i.blockedDays > 30,
-        showSatFlag: i.satisfaction === 'no'
+        showSatFlag: i.satisfaction === 'no',
+        unrecoveredAcquisition: i.acquisitionCost * i.switchedPM,
+        showAcquisitionFlag: (i.acquisitionCost * i.switchedPM) > 0,
+        occupancyOverage: Math.max(0, i.blockedDays - i.agreedBlockedDays),
+        showOccupancyFlag: (i.blockedDays - i.agreedBlockedDays) > 5,
+        showGuestFeedbackFlag: i.guestFeedback === 'no'
       };
     }
 
@@ -1122,6 +1258,25 @@
       document.getElementById('satisfactionCallout').style.display = result.showSatFlag ? '' : 'none';
 
       const i = result.inputs;
+
+      document.getElementById('acquisitionCallout').style.display = result.showAcquisitionFlag ? '' : 'none';
+      document.getElementById('acquisitionCalloutText').textContent = tf('flagAcquisitionText', {
+        amount: '€' + formatNum(result.unrecoveredAcquisition, 0),
+        count: formatNum(i.switchedPM, 0)
+      });
+
+      document.getElementById('occupancyCallout').style.display = result.showOccupancyFlag ? '' : 'none';
+      document.getElementById('occupancyCalloutText').textContent = tf('flagOccupancyText', {
+        days: formatNum(result.occupancyOverage, 0)
+      });
+
+      document.getElementById('guestFeedbackCallout').style.display = result.showGuestFeedbackFlag ? '' : 'none';
+
+      document.getElementById('bd_acq_in').textContent = '€' + formatNum(result.unrecoveredAcquisition, 0);
+      document.getElementById('bd_occ_in').textContent = formatNum(i.blockedDays, 0) + ' / ' + formatNum(i.agreedBlockedDays, 0) + ' ' + t('suffixDays');
+      document.getElementById('bd_occ_effect').textContent = result.showOccupancyFlag ? t('effectFlag') : t('effectOk');
+      document.getElementById('bd_gf_in').textContent = i.guestFeedback === 'yes' ? t('btnYes') : t('btnNo');
+      document.getElementById('bd_gf_effect').textContent = result.showGuestFeedbackFlag ? t('effectFlag') : t('effectOk');
       document.getElementById('bd_churn_in').textContent = formatNum(result.churnRate, 1) + '%';
       document.getElementById('bd_churn_score').textContent = formatNum(result.churnScore, 0);
       document.getElementById('bd_gap_in').textContent = formatNum(i.revenueGap, 0) + '%';
@@ -1163,9 +1318,12 @@
       document.getElementById('ownersGained').value = DEFAULTS.ownersGained;
       document.getElementById('avgTenure').value = DEFAULTS.avgTenure;
       document.getElementById('revenueGap').value = DEFAULTS.revenueGap;
+      document.getElementById('acquisitionCost').value = DEFAULTS.acquisitionCost;
+      document.getElementById('agreedBlockedDays').value = DEFAULTS.agreedBlockedDays;
       document.getElementById('blockedDays').value = DEFAULTS.blockedDays;
       setCadence(DEFAULTS.cadence);
       setSatisfaction(DEFAULTS.satisfaction);
+      setGuestFeedback(DEFAULTS.guestFeedback);
     }
 
     function showToast(msg) {
@@ -1182,6 +1340,9 @@
       const flags = [];
       if (lastResult.showBlockedFlag) flags.push(t('flagBlockedText'));
       if (lastResult.showSatFlag) flags.push(t('flagSatText'));
+      if (lastResult.showAcquisitionFlag) flags.push(tf('flagAcquisitionText', { amount: '€' + formatNum(lastResult.unrecoveredAcquisition, 0), count: formatNum(i.switchedPM, 0) }));
+      if (lastResult.showOccupancyFlag) flags.push(tf('flagOccupancyText', { days: formatNum(lastResult.occupancyOverage, 0) }));
+      if (lastResult.showGuestFeedbackFlag) flags.push(t('flagGuestFeedbackText'));
       return [
         t('summaryTitle'),
         '',
@@ -1196,9 +1357,12 @@
         t('lblGained') + ': ' + formatNum(i.ownersGained, 0),
         t('lblTenure') + ': ' + formatNum(i.avgTenure, 1) + ' ' + t('suffixYears'),
         t('lblRevenueGap') + ': ' + formatNum(i.revenueGap, 0) + '%',
+        t('lblAcquisitionCost') + ': €' + formatNum(i.acquisitionCost, 0),
+        t('lblAgreedBlocked') + ': ' + formatNum(i.agreedBlockedDays, 0),
         t('lblBlocked') + ': ' + formatNum(i.blockedDays, 0),
         t('lblCadence') + ': ' + cadenceLabel(i.cadence),
         t('lblSatisfaction') + ': ' + (i.satisfaction === 'yes' ? t('btnYes') : t('btnNo')),
+        t('lblGuestFeedback') + ': ' + (i.guestFeedback === 'yes' ? t('btnYes') : t('btnNo')),
         '',
         t('summaryFlags'),
         flags.length ? flags.join('\n') : t('summaryNone'),
@@ -1277,6 +1441,7 @@
     applyLang(window.__oisInitialLang || 'en');
     setCadence(DEFAULTS.cadence);
     setSatisfaction(DEFAULTS.satisfaction);
+    setGuestFeedback(DEFAULTS.guestFeedback);
   </script>
 </body>
 </html>

@@ -71,10 +71,10 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
     :root {
-      --accent: #5C6F82;
-      --accent-dark: #455565;
-      --accent-light: rgba(92, 111, 130, 0.12);
-      --accent-secondary: #7A8B9A;
+      --accent: #007AFF;
+      --accent-dark: #0051D5;
+      --accent-light: rgba(0, 122, 255, 0.12);
+      --accent-secondary: #5856D6;
       --alert: #FF3B30;
       --positive: #34C759;
       --warning: #FF9500;
@@ -128,7 +128,7 @@
       width: 32px; height: 32px; background: var(--accent); border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
       color: white; font-weight: 700; font-size: 13px;
-      box-shadow: 0 2px 10px rgba(92, 111, 130, 0.4); flex-shrink: 0;
+      box-shadow: 0 2px 10px rgba(0, 122, 255, 0.4); flex-shrink: 0;
     }
     .brand-text { color: white; min-width: 0; }
     .brand-title {
@@ -167,7 +167,7 @@
     }
     .hero::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(92, 111, 130, 0.35) 0%, transparent 65%);
+      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 122, 255, 0.35) 0%, transparent 65%);
       pointer-events: none;
     }
     .hero h1 {
@@ -223,7 +223,7 @@
       font-size: 10px; font-weight: 700;
       display: inline-flex; align-items: center; justify-content: center;
       cursor: help; position: relative;
-      border: 1px solid rgba(92, 111, 130, 0.2);
+      border: 1px solid rgba(0, 122, 255, 0.2);
       flex-shrink: 0;
     }
     .info-tip:hover, .info-tip:focus-visible, .info-tip.active {
@@ -273,7 +273,7 @@
     .input-wrapper:has(.input-prefix) input[type="number"] { padding-left: 28px; }
     input[type="number"]:focus, select:focus {
       outline: none; border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(92, 111, 130, 0.15);
+      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
     }
 
     .yesno-toggle, .cadence-toggle {
@@ -403,7 +403,7 @@
     }
     .methodology-cta::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 90% 10%, rgba(92,111,130,0.35), transparent 60%);
+      background: radial-gradient(ellipse 70% 60% at 90% 10%, rgba(0,122,255,0.35), transparent 60%);
       pointer-events: none;
     }
     .methodology-content { position: relative; }
@@ -418,7 +418,7 @@
       margin: 16px 0 0; padding: 14px 16px; border-radius: 12px;
       border: 0.5px solid rgba(255, 255, 255, 0.22);
       background: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 0 0 1px rgba(92, 111, 130, 0.15), 0 0 28px rgba(92, 111, 130, 0.25);
+      box-shadow: 0 0 0 1px rgba(0, 122, 255, 0.15), 0 0 28px rgba(0, 122, 255, 0.25);
       font-size: 15px; line-height: 1.7; font-weight: 500;
     }
     .contact-route a {
@@ -688,7 +688,7 @@
         <div class="result-secondary" id="bandLabel">-</div>
       </div>
 
-      <div class="result-highlight revenue-impact-box" id="revenueImpactBox" style="background: linear-gradient(135deg, #5C6F82 0%, #45535F 100%);">
+      <div class="result-highlight revenue-impact-box" id="revenueImpactBox" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);">
         <div class="result-label" data-i18n="revenueImpactLabel">Revenue Already Walking Out the Door</div>
         <div class="revenue-stats-row">
           <div class="revenue-stat">

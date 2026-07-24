@@ -318,6 +318,15 @@
       letter-spacing: -0.03em; margin-bottom: 6px; font-variant-numeric: tabular-nums;
     }
     .result-secondary { font-size: 15px; opacity: 0.92; font-weight: 600; }
+    .revenue-stats-row { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 4px; }
+    .revenue-stat { display: flex; flex-direction: column; align-items: center; }
+    .revenue-stat-value { font-size: clamp(24px, 6vw, 32px); font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+    .revenue-stat-caption { font-size: 12px; opacity: 0.8; font-weight: 500; margin-top: 2px; }
+    .revenue-stat-divider { width: 1px; height: 34px; background: rgba(255,255,255,0.25); }
+    @media (max-width: 380px) {
+      .revenue-stats-row { gap: 12px; }
+      .revenue-stat-value { font-size: 22px; }
+    }
 
     .insight-callout {
       border-radius: var(--radius-md); padding: 18px 18px 18px 16px;
@@ -679,10 +688,19 @@
         <div class="result-secondary" id="bandLabel">-</div>
       </div>
 
-      <div class="result-highlight" id="revenueImpactBox" style="background: linear-gradient(135deg, #5C6F82 0%, #45535F 100%);">
+      <div class="result-highlight revenue-impact-box" id="revenueImpactBox" style="background: linear-gradient(135deg, #5C6F82 0%, #45535F 100%);">
         <div class="result-label" data-i18n="revenueImpactLabel">Revenue Already Walking Out the Door</div>
-        <div class="result-value" id="revenueAtRiskValue">-</div>
-        <div class="result-secondary" id="revenueImpactSecondary">-</div>
+        <div class="revenue-stats-row">
+          <div class="revenue-stat">
+            <div class="revenue-stat-value" id="revenueAtRiskValue">-</div>
+            <div class="revenue-stat-caption" data-i18n="revenueStatThisYear">this year</div>
+          </div>
+          <div class="revenue-stat-divider"></div>
+          <div class="revenue-stat">
+            <div class="revenue-stat-value" id="revenueImpactSecondary">-</div>
+            <div class="revenue-stat-caption" data-i18n="revenueStatTenure">over their typical tenure</div>
+          </div>
+        </div>
       </div>
 
       <div class="insight-callout verdict" id="verdictCallout">
@@ -918,6 +936,8 @@
         resultLabel: 'Owner Retention Score',
         revenueImpactLabel: 'Revenue Already Walking Out the Door',
         revenueImpactSecondaryTpl: 'Had those owners stayed their typical tenure, the total value lost is closer to {amount}',
+        revenueStatThisYear: 'this year',
+        revenueStatTenure: 'over their typical tenure',
         bandStable: 'Stable book',
         bandRisk: 'At-risk pockets',
         bandBleed: 'Active bleed',
@@ -1023,6 +1043,8 @@
         resultLabel: 'Owner Retention Score',
         revenueImpactLabel: 'Ricavo Che Sta Già Uscendo dalla Porta',
         revenueImpactSecondaryTpl: 'Se quei proprietari fossero rimasti per la loro permanenza tipica, il valore totale perso si avvicina a {amount}',
+        revenueStatThisYear: 'quest\'anno',
+        revenueStatTenure: 'sulla permanenza tipica',
         bandStable: 'Portafoglio stabile',
         bandRisk: 'Tasche a rischio',
         bandBleed: 'Perdite attive',
@@ -1128,6 +1150,8 @@
         resultLabel: 'Owner Retention Score',
         revenueImpactLabel: 'Umsatz, der Bereits Zur Tür Hinausgeht',
         revenueImpactSecondaryTpl: 'Wären diese Eigentümer für ihre typische Verweildauer geblieben, läge der Gesamtwertverlust näher bei {amount}',
+        revenueStatThisYear: 'dieses Jahr',
+        revenueStatTenure: 'über die typische Verweildauer',
         bandStable: 'Stabiles Buch',
         bandRisk: 'Risikotaschen',
         bandBleed: 'Aktiver Verlust',
@@ -1320,9 +1344,7 @@
       document.getElementById('bandLabel').textContent = t(result.bandKey);
 
       document.getElementById('revenueAtRiskValue').textContent = '€' + formatNum(result.revenueAtRiskThisYear, 0);
-      document.getElementById('revenueImpactSecondary').textContent = tf('revenueImpactSecondaryTpl', {
-        amount: '€' + formatNum(result.lifetimeValueLost, 0)
-      });
+      document.getElementById('revenueImpactSecondary').textContent = '€' + formatNum(result.lifetimeValueLost, 0);
 
       document.getElementById('verdictTitle').textContent = t(result.bandKey);
       document.getElementById('verdictText').textContent = t(result.verdictKey);

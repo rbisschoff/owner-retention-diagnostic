@@ -336,6 +336,16 @@
     .revenue-basis-caption {
       font-size: 11px; opacity: 0.75; margin-top: 10px; line-height: 1.4;
     }
+    .chart-section {
+      background: var(--card); border-radius: var(--radius-lg); padding: 20px 18px;
+      margin-bottom: var(--section-gap); box-shadow: var(--shadow-card);
+    }
+    .chart-section-desc {
+      font-size: 13px; color: var(--muted); line-height: 1.5; margin: 0 0 16px;
+    }
+    .chart-container {
+      position: relative; width: 100%; height: 220px;
+    }
     .revenue-stats-row { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 4px; }
     .revenue-stat { display: flex; flex-direction: column; align-items: center; }
     .revenue-stat-value { font-size: clamp(24px, 6vw, 32px); font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
@@ -513,6 +523,7 @@
       }
     }
   </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 <body>
 
@@ -728,6 +739,17 @@
         <div class="revenue-basis-caption" id="revenueBasisCaption">-</div>
       </div>
 
+      <div class="chart-section" id="lostPropertiesSection" style="display:none;">
+        <div class="section-label" style="margin-top: 0;">
+          <span class="section-label-accent"></span>
+          <span data-i18n="lostPropsChartTitle">Revenue from the properties you lost</span>
+        </div>
+        <p class="chart-section-desc" data-i18n="lostPropsChartDesc">Scoped only to the owners who switched PM this year, not your whole portfolio.</p>
+        <div class="chart-container">
+          <canvas id="lostPropertiesChart"></canvas>
+        </div>
+      </div>
+
       <div class="section-label" id="focusSectionLabel" style="margin-top: 4px; display:none;">
         <span class="section-label-accent"></span>
         <span data-i18n="secWhereToFocus">Where to focus</span>
@@ -897,6 +919,7 @@
     let guestFeedbackData = 'no';
     let lastResult = null;
     let completionTracked = false;
+    let lostPropertiesChartInstance = null;
 
     const DEFAULTS = {
       totalOwners: 40,
@@ -964,6 +987,10 @@
         revenueStatThisYear: 'this year',
         revenueStatTenure: 'over their typical tenure',
         revenueBasisCaption: 'Based on {count} owner(s) who switched PM this year, at an average €{avgRevenue} in annual revenue each',
+        lostPropsChartTitle: 'Revenue from the properties you lost',
+        lostPropsChartDesc: 'Scoped only to the owners who switched PM this year, not your whole portfolio.',
+        lostPropsPotentialLabel: 'Potential (these properties)',
+        lostPropsActualLabel: 'Actual now (these properties)',
         secWhereToFocus: 'Where to focus',
         bandStable: 'Stable book',
         bandRisk: 'At-risk pockets',
@@ -1073,6 +1100,10 @@
         revenueStatThisYear: 'quest\'anno',
         revenueStatTenure: 'sulla permanenza tipica',
         revenueBasisCaption: 'Basato su {count} proprietari che hanno cambiato PM quest\'anno, con un ricavo medio annuo di €{avgRevenue} ciascuno',
+        lostPropsChartTitle: 'Ricavo dalle proprietà che hai perso',
+        lostPropsChartDesc: 'Limitato ai soli proprietari che hanno cambiato PM quest\'anno, non all\'intero portafoglio.',
+        lostPropsPotentialLabel: 'Potenziale (queste proprietà)',
+        lostPropsActualLabel: 'Attuale ora (queste proprietà)',
         secWhereToFocus: 'Dove concentrarsi',
         bandStable: 'Portafoglio stabile',
         bandRisk: 'Tasche a rischio',
@@ -1182,6 +1213,10 @@
         revenueStatThisYear: 'dieses Jahr',
         revenueStatTenure: 'über die typische Verweildauer',
         revenueBasisCaption: 'Basierend auf {count} Eigentümern, die dieses Jahr den PM gewechselt haben, bei durchschnittlich €{avgRevenue} Jahresumsatz pro Einheit',
+        lostPropsChartTitle: 'Umsatz aus den verlorenen Immobilien',
+        lostPropsChartDesc: 'Bezieht sich nur auf Eigentümer, die dieses Jahr den PM gewechselt haben, nicht auf Ihr gesamtes Portfolio.',
+        lostPropsPotentialLabel: 'Potenzial (diese Immobilien)',
+        lostPropsActualLabel: 'Aktuell (diese Immobilien)',
         secWhereToFocus: 'Wo Sie ansetzen sollten',
         bandStable: 'Stabiles Buch',
         bandRisk: 'Risikotaschen',
@@ -1385,6 +1420,8 @@
       document.getElementById('verdictTitle').textContent = t(result.bandKey);
       document.getElementById('verdictText').textContent = t(result.verdictKey);
 
+      renderLostPropertiesChart(i);
+
       document.getElementById('focusSectionLabel').style.display = (
         result.showBlockedFlag || result.showSatFlag || result.showCadenceFlag ||
         result.showAcquisitionFlag || result.showOccupancyFlag || result.showGuestFeedbackFlag
@@ -1427,6 +1464,51 @@
       document.getElementById('bd_sat_in').textContent = i.satisfaction === 'yes' ? t('btnYes') : t('btnNo');
       document.getElementById('bd_sat_effect').textContent = result.showSatFlag ? t('effectFlag') : t('effectOk');
       document.getElementById('bd_final').textContent = formatNum(result.finalScore, 0);
+    }
+
+    function renderLostPropertiesChart(i) {
+      const section = document.getElementById('lostPropertiesSection');
+      if (!i.switchedPM || i.switchedPM <= 0) {
+        section.style.display = 'none';
+        return;
+      }
+      section.style.display = '';
+
+      const potential = i.switchedPM * i.avgRevenue;
+      const canvas = document.getElementById('lostPropertiesChart');
+      const ctx = canvas.getContext('2d');
+      if (lostPropertiesChartInstance) lostPropertiesChartInstance.destroy();
+
+      lostPropertiesChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: [t('lostPropsPotentialLabel'), t('lostPropsActualLabel')],
+          datasets: [{
+            data: [potential, 0],
+            backgroundColor: ['#007AFF', '#C0392B'],
+            borderRadius: 4,
+            maxBarThickness: 90
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => '€' + Math.round(ctx.raw).toLocaleString('de-DE')
+              }
+            }
+          },
+          scales: {
+            y: {
+              ticks: { callback: (v) => '€' + Number(v).toLocaleString('de-DE') },
+              suggestedMax: potential * 1.15
+            }
+          }
+        }
+      });
     }
 
     function trackCompletion(result) {

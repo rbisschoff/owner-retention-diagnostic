@@ -295,11 +295,17 @@
       outline: 2px solid var(--accent); outline-offset: 2px;
     }
 
+    .score-card {
+      border-radius: var(--radius-md); overflow: hidden;
+      margin-bottom: var(--section-gap); box-shadow: var(--shadow-sm);
+    }
     .result-highlight {
       background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
-      color: white; padding: 28px 20px; border-radius: var(--radius-md);
-      text-align: center; margin-bottom: var(--section-gap);
+      color: white; padding: 20px 20px 16px;
+      text-align: center;
     }
+    .score-card .result-highlight { margin-bottom: 0; }
+    .result-highlight.revenue-impact-box { border-radius: var(--radius-md); margin-bottom: var(--section-gap); }
     .result-highlight.band-stable {
       background: linear-gradient(135deg, var(--positive) 0%, #2A9D47 100%);
     }
@@ -311,13 +317,25 @@
     }
     .result-label {
       font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.1em; opacity: 0.85; margin-bottom: 8px;
+      letter-spacing: 0.1em; opacity: 0.85; margin-bottom: 6px;
     }
     .result-value {
-      font-size: clamp(36px, 8vw, 48px); font-weight: 800;
-      letter-spacing: -0.03em; margin-bottom: 6px; font-variant-numeric: tabular-nums;
+      font-size: clamp(30px, 7vw, 40px); font-weight: 800;
+      letter-spacing: -0.03em; margin-bottom: 4px; font-variant-numeric: tabular-nums;
     }
-    .result-secondary { font-size: 15px; opacity: 0.92; font-weight: 600; }
+    .result-secondary { font-size: 14px; opacity: 0.92; font-weight: 600; }
+    .score-explainer {
+      background: var(--card); padding: 14px 18px 16px;
+      font-size: 13px; line-height: 1.55; color: var(--ink2);
+      border-top: 1px solid var(--border-light);
+    }
+    .score-explainer-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 6px; color: var(--muted);
+    }
+    .revenue-basis-caption {
+      font-size: 11px; opacity: 0.75; margin-top: 10px; line-height: 1.4;
+    }
     .revenue-stats-row { display: flex; align-items: center; justify-content: center; gap: 20px; margin-top: 4px; }
     .revenue-stat { display: flex; flex-direction: column; align-items: center; }
     .revenue-stat-value { font-size: clamp(24px, 6vw, 32px); font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
@@ -682,10 +700,16 @@
     </div>
 
     <div id="resultsPanel">
-      <div class="result-highlight band-risk" id="resultHighlight">
-        <div class="result-label" data-i18n="resultLabel">Owner Retention Score</div>
-        <div class="result-value" id="scoreValue">-</div>
-        <div class="result-secondary" id="bandLabel">-</div>
+      <div class="score-card" id="scoreCard">
+        <div class="result-highlight band-risk" id="resultHighlight">
+          <div class="result-label" data-i18n="resultLabel">Owner Retention Score</div>
+          <div class="result-value" id="scoreValue">-</div>
+          <div class="result-secondary" id="bandLabel">-</div>
+        </div>
+        <div class="score-explainer" id="verdictCallout">
+          <div class="score-explainer-title" id="verdictTitle"></div>
+          <div id="verdictText"></div>
+        </div>
       </div>
 
       <div class="result-highlight revenue-impact-box" id="revenueImpactBox" style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);">
@@ -701,11 +725,12 @@
             <div class="revenue-stat-caption" data-i18n="revenueStatTenure">over their typical tenure</div>
           </div>
         </div>
+        <div class="revenue-basis-caption" id="revenueBasisCaption">-</div>
       </div>
 
-      <div class="insight-callout verdict" id="verdictCallout">
-        <div class="insight-callout-title" id="verdictTitle"></div>
-        <div id="verdictText"></div>
+      <div class="section-label" id="focusSectionLabel" style="margin-top: 4px; display:none;">
+        <span class="section-label-accent"></span>
+        <span data-i18n="secWhereToFocus">Where to focus</span>
       </div>
 
       <div class="insight-callout flag-blocked" id="blockedCallout" style="display:none;">
@@ -938,6 +963,8 @@
         revenueImpactSecondaryTpl: 'Had those owners stayed their typical tenure, the total value lost is closer to {amount}',
         revenueStatThisYear: 'this year',
         revenueStatTenure: 'over their typical tenure',
+        revenueBasisCaption: 'Based on {count} owner(s) who switched PM this year, at an average €{avgRevenue} in annual revenue each',
+        secWhereToFocus: 'Where to focus',
         bandStable: 'Stable book',
         bandRisk: 'At-risk pockets',
         bandBleed: 'Active bleed',
@@ -1045,6 +1072,8 @@
         revenueImpactSecondaryTpl: 'Se quei proprietari fossero rimasti per la loro permanenza tipica, il valore totale perso si avvicina a {amount}',
         revenueStatThisYear: 'quest\'anno',
         revenueStatTenure: 'sulla permanenza tipica',
+        revenueBasisCaption: 'Basato su {count} proprietari che hanno cambiato PM quest\'anno, con un ricavo medio annuo di €{avgRevenue} ciascuno',
+        secWhereToFocus: 'Dove concentrarsi',
         bandStable: 'Portafoglio stabile',
         bandRisk: 'Tasche a rischio',
         bandBleed: 'Perdite attive',
@@ -1152,6 +1181,8 @@
         revenueImpactSecondaryTpl: 'Wären diese Eigentümer für ihre typische Verweildauer geblieben, läge der Gesamtwertverlust näher bei {amount}',
         revenueStatThisYear: 'dieses Jahr',
         revenueStatTenure: 'über die typische Verweildauer',
+        revenueBasisCaption: 'Basierend auf {count} Eigentümern, die dieses Jahr den PM gewechselt haben, bei durchschnittlich €{avgRevenue} Jahresumsatz pro Einheit',
+        secWhereToFocus: 'Wo Sie ansetzen sollten',
         bandStable: 'Stabiles Buch',
         bandRisk: 'Risikotaschen',
         bandBleed: 'Aktiver Verlust',
@@ -1338,6 +1369,7 @@
 
     function renderResult(result) {
       lastResult = result;
+      const i = result.inputs;
       const el = document.getElementById('resultHighlight');
       el.className = 'result-highlight ' + result.bandClass;
       document.getElementById('scoreValue').textContent = String(result.finalScore);
@@ -1345,15 +1377,22 @@
 
       document.getElementById('revenueAtRiskValue').textContent = '€' + formatNum(result.revenueAtRiskThisYear, 0);
       document.getElementById('revenueImpactSecondary').textContent = '€' + formatNum(result.lifetimeValueLost, 0);
+      document.getElementById('revenueBasisCaption').textContent = tf('revenueBasisCaption', {
+        count: formatNum(i.switchedPM, 0),
+        avgRevenue: formatNum(i.avgRevenue, 0)
+      });
 
       document.getElementById('verdictTitle').textContent = t(result.bandKey);
       document.getElementById('verdictText').textContent = t(result.verdictKey);
 
+      document.getElementById('focusSectionLabel').style.display = (
+        result.showBlockedFlag || result.showSatFlag || result.showCadenceFlag ||
+        result.showAcquisitionFlag || result.showOccupancyFlag || result.showGuestFeedbackFlag
+      ) ? '' : 'none';
+
       document.getElementById('blockedCallout').style.display = result.showBlockedFlag ? '' : 'none';
       document.getElementById('satisfactionCallout').style.display = result.showSatFlag ? '' : 'none';
       document.getElementById('cadenceCallout').style.display = result.showCadenceFlag ? '' : 'none';
-
-      const i = result.inputs;
 
       document.getElementById('acquisitionCallout').style.display = result.showAcquisitionFlag ? '' : 'none';
       document.getElementById('acquisitionCalloutText').textContent = tf('flagAcquisitionText', {

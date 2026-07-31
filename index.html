@@ -70,25 +70,27 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
+    /* OPERATOR SERIES BRANDING */
     :root {
-      --accent: #007AFF;
-      --accent-dark: #0051D5;
-      --accent-light: rgba(0, 122, 255, 0.12);
+      --accent: #C9A961;
+      --accent-dark: #A8863F;
+      --accent-light: rgba(201, 169, 97, 0.15);
       --accent-secondary: #5856D6;
       --alert: #FF3B30;
       --positive: #34C759;
       --warning: #FF9500;
 
-      --ink: #1C1C1E;
-      --ink2: #3A3A3C;
-      --muted: #8E8E93;
-      --muted2: #AEAEB2;
+      --ink: #1E2F28;
+      --ink2: #3A4A42;
+      --muted: #5C6B62;
+      --muted2: #8A968E;
 
-      --bg: #F2F2F7;
+      --bg: #FAF8F4;
       --card: #FFFFFF;
-      --card2: #F9F9FB;
-      --border: rgba(60, 60, 67, 0.12);
-      --border-light: rgba(60, 60, 67, 0.08);
+      --card2: #EDEFE9;
+      --card-tint: #EDEFE9;
+      --border: rgba(30, 47, 40, 0.12);
+      --border-light: rgba(30, 47, 40, 0.08);
 
       --radius-lg: 20px;
       --radius-md: 16px;
@@ -113,7 +115,7 @@
     }
 
     header {
-      background: rgba(8,8,14,0.96);
+      background: rgba(30,47,40,0.97);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       position: sticky; top: 0; z-index: 100;
@@ -128,7 +130,7 @@
       width: 32px; height: 32px; background: var(--accent); border-radius: 10px;
       display: flex; align-items: center; justify-content: center;
       color: white; font-weight: 700; font-size: 13px;
-      box-shadow: 0 2px 10px rgba(0, 122, 255, 0.4); flex-shrink: 0;
+      box-shadow: 0 2px 10px rgba(201, 169, 97, 0.4); flex-shrink: 0;
     }
     .brand-text { color: white; min-width: 0; }
     .brand-title {
@@ -162,13 +164,8 @@
     .lang-flag { font-size: 13px; line-height: 1; }
 
     .hero {
-      background: linear-gradient(170deg, #1A222B 0%, #2A3540 55%, #1A222B 100%);
+      background: var(--ink);
       padding: 40px 24px 36px; text-align: center; position: relative; overflow: hidden;
-    }
-    .hero::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 122, 255, 0.35) 0%, transparent 65%);
-      pointer-events: none;
     }
     .hero h1 {
       position: relative; font-size: clamp(24px, 4vw, 32px);
@@ -176,7 +173,7 @@
       color: #fff; line-height: 1.2;
     }
     .hero p {
-      position: relative; font-size: 14px; color: rgba(200,210,220,0.88);
+      position: relative; font-size: 14px; color: rgba(255,255,255,0.75);
       max-width: 640px; margin: 0 auto; line-height: 1.65;
     }
 
@@ -223,7 +220,7 @@
       font-size: 10px; font-weight: 700;
       display: inline-flex; align-items: center; justify-content: center;
       cursor: help; position: relative;
-      border: 1px solid rgba(0, 122, 255, 0.2);
+      border: 1px solid rgba(201, 169, 97, 0.2);
       flex-shrink: 0;
     }
     .info-tip:hover, .info-tip:focus-visible, .info-tip.active {
@@ -273,7 +270,7 @@
     .input-wrapper:has(.input-prefix) input[type="number"] { padding-left: 28px; }
     input[type="number"]:focus, select:focus {
       outline: none; border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+      box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.15);
     }
 
     .yesno-toggle, .cadence-toggle {
@@ -425,28 +422,22 @@
 
     .methodology-cta {
       position: relative;
-      background: linear-gradient(145deg, #1A222B 0%, #2A3540 50%, #1A222B 100%);
+      background: var(--ink);
       color: white; border-radius: var(--radius-lg); padding: 36px 32px;
       margin-bottom: var(--section-gap); overflow: hidden;
-    }
-    .methodology-cta::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 60% at 90% 10%, rgba(0,122,255,0.35), transparent 60%);
-      pointer-events: none;
     }
     .methodology-content { position: relative; }
     .methodology-label {
       font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.1em; color: rgba(200,210,220,0.85); margin-bottom: 12px;
+      letter-spacing: 0.1em; color: rgba(255,255,255,0.85); margin-bottom: 12px;
     }
     .methodology-text {
-      font-size: 14px; line-height: 1.65; color: rgba(220,228,235,0.92); margin-bottom: 16px;
+      font-size: 14px; line-height: 1.65; color: rgba(255,255,255,0.92); margin-bottom: 16px;
     }
     .contact-route {
       margin: 16px 0 0; padding: 14px 16px; border-radius: 12px;
       border: 0.5px solid rgba(255, 255, 255, 0.22);
       background: rgba(255, 255, 255, 0.08);
-      box-shadow: 0 0 0 1px rgba(0, 122, 255, 0.15), 0 0 28px rgba(0, 122, 255, 0.25);
       font-size: 15px; line-height: 1.7; font-weight: 500;
     }
     .contact-route a {

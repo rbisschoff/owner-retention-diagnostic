@@ -487,6 +487,14 @@
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+    /* DESKTOP SCALE-UP */
+    @media (min-width: 1000px) {
+      .header-inner { max-width: 1200px; }
+      main { max-width: 1200px; }
+      .attribution-content { max-width: 1200px; }
+      footer { max-width: 1200px; }
+    }
+
     @media (max-width: 640px) {
       html, body { overflow-x: clip; }
       .brand-title { font-size: 13px; }

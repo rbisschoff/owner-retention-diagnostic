@@ -1,0 +1,3 @@
+# Owner Retention Diagnostic
+
+Owner Retention Diagnostic is a free tool that measures owner churn, revenue gap, and reporting cadence for short-term rental and serviced apartment property managers. It is for managers who track guest churn closely but rarely track owner churn, even though losing an owner means losing the entire unit, not just one booking. It surfaces the warning signs before an owner leaves, rather than after. It runs entirely in the browser: no login, no account, and no data leaves the visitor's device. It is part of the Operator Intelligence Suite by Roger Bisschoff.

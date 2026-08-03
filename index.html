@@ -4,15 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Owner Retention Diagnostic · Operator Series</title>
-  <meta name="description" data-i18n-meta="description" content="Losing an owner is losing the unit. Measure owner churn, revenue gap, and reporting cadence. Part of the Operator Series.">
+  <meta name="description" content="Losing an owner is losing the unit. Measure owner churn, revenue gap, and reporting cadence. Part of the Operator Series.">
+  <link rel="canonical" href="https://rbisschoff.github.io/owner-retention-diagnostic/">
   <link rel="alternate" hreflang="en" href="https://rbisschoff.github.io/owner-retention-diagnostic/?lang=en">
   <link rel="alternate" hreflang="it" href="https://rbisschoff.github.io/owner-retention-diagnostic/?lang=it">
   <link rel="alternate" hreflang="de" href="https://rbisschoff.github.io/owner-retention-diagnostic/?lang=de">
   <link rel="alternate" hreflang="x-default" href="https://rbisschoff.github.io/owner-retention-diagnostic/?lang=en">
 
-  <meta property="og:title" data-i18n-meta="ogTitle" content="Owner Retention Diagnostic · Operator Series">
-  <meta property="og:description" data-i18n-meta="ogDescription" content="Losing an owner is losing the unit. Most managers only notice after it happens.">
+  <!-- Open Graph / Twitter — title & description are regenerated at runtime from the hero copy
+       in the I18N object below (see buildMetaFromCopy). These are the pre-JS fallback values. -->
+  <meta property="og:title" content="Owner Retention Diagnostic · Operator Series">
+  <meta property="og:description" content="Losing an owner is losing the unit. Most managers only notice after it happens.">
   <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Owner Retention Diagnostic · Operator Series">
+  <meta name="twitter:description" content="Losing an owner is losing the unit. Most managers only notice after it happens.">
 
   <script>
     (function () {
@@ -31,31 +37,6 @@
       document.documentElement.lang = lang;
       window.__oisInitialLang = lang;
       try { localStorage.setItem('ois-lang', lang); } catch (e) {}
-      const metadata = {
-        en: {
-          description: 'Losing an owner is losing the unit. Measure owner churn, revenue gap, and reporting cadence.',
-          ogTitle: 'Owner Retention Diagnostic · Operator Series',
-          ogDescription: 'Losing an owner is losing the unit. Most managers only notice after it happens.'
-        },
-        it: {
-          description: 'Perdere un proprietario significa perdere l\'unità. Misura churn, gap di ricavi e cadenza di reporting.',
-          ogTitle: 'Owner Retention Diagnostic · Operator Series',
-          ogDescription: 'Perdere un proprietario significa perdere l\'unità. La maggior parte dei gestori se ne accorge solo dopo.'
-        },
-        de: {
-          description: 'Einen Eigentümer zu verlieren heißt, die Unit zu verlieren. Messen Sie Churn, Umsatzlücke und Reporting-Rhythmus.',
-          ogTitle: 'Owner Retention Diagnostic · Operator Series',
-          ogDescription: 'Einen Eigentümer zu verlieren heißt, die Unit zu verlieren. Die meisten Manager merken es erst danach.'
-        }
-      };
-      window.updateOisMetadata = function (activeLang) {
-        const pack = metadata[activeLang] || metadata.en;
-        document.querySelectorAll('[data-i18n-meta]').forEach(function (el) {
-          const value = pack[el.getAttribute('data-i18n-meta')];
-          if (value) el.setAttribute('content', value);
-        });
-      };
-      window.updateOisMetadata(lang);
     })();
   </script>
 
@@ -1723,6 +1704,61 @@
         window.prompt(t('toastCopyFail'), text);
       }
     }
+
+    // Title/meta description/OG/Twitter tags and JSON-LD are generated from the SAME
+    // hero copy (I18N) used for the visible page, so editing hero strings above keeps
+    // SEO fields in sync automatically. Hardcoded <head> values are only a pre-JS fallback.
+    const META_FALLBACK = {
+      title: 'Owner Retention Diagnostic · Operator Series',
+      description: 'Losing an owner is losing the unit. Measure owner churn, revenue gap, and reporting cadence. Part of the Operator Series.'
+    };
+    function truncateAtWord(str, maxLen) {
+      if (!str || str.length <= maxLen) return str;
+      const cut = str.slice(0, maxLen);
+      const lastSpace = cut.lastIndexOf(' ');
+      return (lastSpace > 0 ? cut.slice(0, lastSpace) : cut).trim() + '…';
+    }
+    function setMetaContent(selector, content) {
+      const el = document.querySelector(selector);
+      if (el) el.setAttribute('content', content);
+    }
+    function buildJsonLd(pack) {
+      const data = {
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: 'Owner Retention Diagnostic',
+        description: (pack && pack.heroSubtitle) || META_FALLBACK.description,
+        url: 'https://rbisschoff.github.io/owner-retention-diagnostic/',
+        applicationCategory: 'BusinessApplication',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        isPartOf: { '@type': 'WebSite', name: 'Operator Intelligence Suite', url: 'https://rbisschoff.github.io/operator-intelligence-suite/' }
+      };
+      let script = document.getElementById('ois-json-ld');
+      if (!script) {
+        script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.id = 'ois-json-ld';
+        document.head.appendChild(script);
+      }
+      script.textContent = JSON.stringify(data);
+    }
+    function buildMetaFromCopy(lang) {
+      const pack = I18N[lang] || I18N.en;
+      let title = META_FALLBACK.title;
+      let description = META_FALLBACK.description;
+      if (pack && pack.heroTitle && pack.heroSubtitle) {
+        title = pack.heroTitle;
+        description = truncateAtWord(pack.heroSubtitle, 160);
+      }
+      document.title = title;
+      setMetaContent('meta[name="description"]', description);
+      setMetaContent('meta[property="og:title"]', title);
+      setMetaContent('meta[property="og:description"]', description);
+      setMetaContent('meta[name="twitter:title"]', title);
+      setMetaContent('meta[name="twitter:description"]', description);
+      buildJsonLd(pack);
+    }
+    window.updateOisMetadata = buildMetaFromCopy;
 
     function applyLang(lang) {
       currentLang = I18N[lang] ? lang : 'en';

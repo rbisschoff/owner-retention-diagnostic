@@ -510,6 +510,9 @@
     /* DESKTOP SCALE-UP */
     @media (min-width: 1000px) {
       .header-inner { max-width: 1200px; }
+      .hero { padding: 48px 24px 40px; }
+      .hero h1 { font-size: clamp(30px, 2.8vw, 40px); margin-bottom: 18px; }
+      .hero p { font-size: 17px; max-width: 640px; line-height: 1.6; }
       main { max-width: 1200px; }
       .about-top-wrap { max-width: 1200px; padding: 8px 32px 0; }
       .about { padding: 28px 34px; }
@@ -522,6 +525,20 @@
       .about-method-line { font-size: 14px; margin-bottom: 16px; }
       .about-service-tag { font-size: 12px; padding: 10px 12px; }
       footer { max-width: 1200px; font-size: 13px; padding: 28px 32px 90px; }
+    }
+
+    @media (min-width: 1500px) {
+      .hero { padding: 56px 24px 46px; }
+      .hero h1 { font-size: clamp(36px, 2.6vw, 48px); margin-bottom: 20px; }
+      .hero p { font-size: 18px; max-width: 680px; }
+      .card, .breakdown-section { padding: 32px 36px; }
+      .about { padding: 34px 40px; }
+      .author-avatar { width: 50px; height: 50px; }
+      .author-name { font-size: 20px; }
+      .author-role { font-size: 15px; }
+      .about-outcome { font-size: 17px; max-width: 900px; margin: 22px auto; }
+      .about-method-line { font-size: 15px; }
+      .about-service-tag { font-size: 13px; padding: 11px 14px; }
     }
 
     @media (max-width: 640px) {
@@ -930,14 +947,14 @@
         <img class="author-avatar" src="assets/roger-headshot.jpg" alt="Roger Bisschoff" width="28" height="28">
         <div class="author-info">
           <div class="author-name">Roger Bisschoff</div>
-          <div class="author-role" data-i18n="authorRole">Distribution and revenue consulting for short-term rental and serviced apartment operators</div>
+          <div class="author-role" data-i18n="authorRole">Distribution and revenue consulting for short-term rental, vacation rental, and serviced apartment operators</div>
         </div>
       </div>
       <div class="about-cta-row">
-        <a href="mailto:rbisschoff@gmail.com" class="about-cta-primary" data-i18n="getInTouch">Get in touch →</a>
+        <a href="mailto:rbisschoff@gmail.com" class="about-cta-primary" data-i18n="getInTouch">Talk through your numbers →</a>
         <a href="https://www.linkedin.com/in/roger-bisschoff/" target="_blank" rel="noopener noreferrer" class="author-link" data-i18n="viewProfile">View profile</a>
       </div>
-      <p class="about-outcome" data-i18n="aboutOutcome">I look across an operator's whole commercial picture, revenue, distribution, guest experience, owner retention, tech stack, to find where the real growth opportunity is.</p>
+      <p class="about-outcome" data-i18n="aboutOutcome">I look across an operator's whole commercial picture — whether that's short-term rental or full property management — revenue, distribution, guest experience, owner retention, tech stack, to find where the real growth opportunity is.</p>
       <p class="about-method-line">
         <span data-i18n="methodMapTitle">Map</span> <span data-i18n="methodLineMap">everything</span>
         <span class="about-method-arrow">→</span>
